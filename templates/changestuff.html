@@ -1,0 +1,44 @@
+<html>
+	<body>
+		<div style="font-family: 'Lucida Console', 'Lucida Sans Typewriter', Monaco, 'Bitstream Vera Sans Mono', monospace;">
+			<p><center><h1>CHANGE STUFF ADMIN</h2></p>
+			<a href="http://cssfontstack.com/"> CSS Font Stack </a></center>
+			<div style="margin-left:500px;">
+				<h4> Add an outfit. </h4>
+					<form method="POST" action="/addoutfit">
+						<input type="text" name="top" placeholder="top"/> 
+						<br><input type="text" name="bottoms" placeholder="bottoms"/> 
+				 		<br><input type="text" name="footwear" placeholder="footwear"/>
+				 		<br><input type="text" name="accessory" placeholder="accessory1"/>
+				 		<br><input type="text" name="accessory" placeholder="accessory2"/>
+				 		<br><input type="text" name="accessory" placeholder="accessory3"/>
+						<br><input type="submit" value="Submit" />
+					</form>
+
+				<h4>Update an outfit.  </h4>
+					<form method="POST" action="/updateoutfit">
+						<select id="outfit_dropdown" onchange="dropdown_safety(this.form,this.id)" name="outfit_dropdown">
+							<option value="default">select outfit</option> 
+							<option value="{{outfit_id}}">outfit1 (put the id and list attributes here)</option> 
+						</select>
+						<br><input type="text" name="bottoms" placeholder="bottoms"/> 
+				 		<br><input type="text" name="footwear" placeholder="footwear"/>
+				 		<br><input type="text" name="accessory" placeholder="accessory1"/>
+				 		<br><input type="text" name="accessory" placeholder="accessory2"/>
+				 		<br><input type="text" name="accessory" placeholder="accessory3"/>		
+						<br><input type="submit" value="Submit" />
+					</form>
+
+				<h4> Delete an outfit.  </h4>
+					<form method="POST" action="/deleteoutfit">
+						<select id="outfit_dropdown" onchange="dropdown_safety(this.form,this.id)" name="outfit_dropdown">
+						<option value="default">select outfit</option> 
+						<option value="{{outfit_id}}">outfit1 (put the id and list attributes here)</option> 
+						</select>
+						<br><input type="submit" value="Submit" />
+					</form>
+			</div>
+		</div>
+		<iframe src="https://www.google.com/calendar/embed?src=o5ufa7l3ai1a3d8u8t087iptl8%40group.calendar.google.com&ctz=America/Los_Angeles" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+	</body>
+</html>
