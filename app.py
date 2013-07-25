@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, request, escape, session, url_for
-# import model
+import model
 
 app = Flask(__name__)
 
@@ -9,48 +9,35 @@ app.secret_key = 'Vrjwlr4315j/3yX R~fd931!jmN]fjkdl7381/,fff'
 
 @app.route("/")
 def index():
-    return "homepage"
+    return redirect(url_for('changestuff'))
 
 ## my input pages ##
 @app.route("/changestuff", methods=['GET'])
-def display_addoutfit():
-    return render_template("changestuff.html")
+def changestuff():
+	all_tags = model.select_tags()
+	all_garments = model.select_garments()
+	return render_template("changestuff.html",all_tags=all_tags, all_garments=all_garments)
 
+@app.route("/addgarment", methods=['POST'])
+def process_addgarment():
+	color=request.form["color"]
+	keywords=request.form["keywords"]
+	type=request.form["type"]
+	garment_tags=request.form.getlist("garment_tags")
+	model.addgarment(garment_tags=garment_tags, keywords=keywords, type=type, color=color)
+	return redirect(url_for('changestuff'))
 
-@app.route("/addoutfit", methods=['POST'])
-def process_addoutfit():
-    return redirect(url_for('index'))
+@app.route("/addtag", methods=['POST'])
+def process_addtag():
+	tag=request.form["tag"]
+	model.addtag(tag=tag)
+	return redirect(url_for('changestuff'))
 
-@app.route("/deleteoutfit", methods=['POST'])
-def process_deleteoutfit():
-    return redirect(url_for('index'))
-
-@app.route("/updateoutfit", methods=['POST'])
-def process_updateoutfit():
-    return redirect(url_for('index'))
-
-
-# @app.route("/login", methods=["GET"])
-# def display_login():
-#     return render_template('login.html')
-
-
-# @app.route("/login", methods=['POST'])
-# def process_login():
-#     user = model.valid_login(request.form['email'], request.form['password'])
-#     if user:
-#         session["user_id"] = user.id
-#         return redirect(url_for('index'))
-#     else:
-#         error = "invalid email/password"
-#         return render_template('login.html', error=error)
-
-
-# @app.route('/logout')
-# def logout():
-#     # remove the username from the session if it's there
-#     session.pop('user_id', None)
-#     return redirect(url_for('index'))
+@app.route("/deletegarment", methods=['POST'])
+def process_deletegarment():
+	id = request.form["garment.id"]
+	model.deletegarment(id)
+	return redirect(url_for('changestuff'))
 
 
 if __name__ == "__main__":
