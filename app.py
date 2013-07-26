@@ -35,9 +35,17 @@ def process_addtag():
 
 @app.route("/deletegarment", methods=['POST'])
 def process_deletegarment():
-	id = request.form["garment.id"]
-	model.deletegarment(id)
+	garment_id=request.form["garment_id"] #passes the entire garment object
+	model.deletegarment(garment_id)
 	return redirect(url_for('changestuff'))
+
+
+# @app.route("/deletegarment", methods=['POST'])
+# def process_deletegarment():
+# 	print request.form["garment.id"]
+# 	id = request.form["garment.id"]
+# 	model.deletegarment(id)
+# 	return redirect(url_for('changestuff'))
 
 
 if __name__ == "__main__":

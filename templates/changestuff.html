@@ -26,7 +26,7 @@
 
 				<h4>Delete a garment.  </h4>
 					<form method="POST" action="/deletegarment">
-						<select id="garment_dropdown" onchange="dropdown_safety(this.form,this.id)" name="garment_dropdown">
+						<select id="garment_dropdown" onchange="dropdown_safety(this.form,this.id)" name="garment_id">
 							<option value="default">select outfit</option> 
 							{% for garment in all_garments %}
 							<option value="{{garment.id}}">{{garment.id}} {{garment.keywords}} {{garment.color}}</option> 

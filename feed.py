@@ -1,11 +1,11 @@
-from model import Garment, Tag, Garment_Tag, make_garments_table, make_tags_table, make_garment_tags_table
+from model import Garment, Tag, make_garments_table, make_tags_table, make_garment_tags_table
 from sqlalchemy.ext.declarative import declarative_base
 import csv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 
 
-ENGINE = create_engine("postgresql+psycopg2:///rack")
+ENGINE = create_engine("postgresql+psycopg2:///rack_ass")
 Session = scoped_session(sessionmaker(bind=ENGINE, autocommit=False, autoflush=False))
 
 session = Session()
