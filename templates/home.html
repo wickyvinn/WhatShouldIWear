@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block head %}
+{{ super() }}
+{% block title %}Homepage{% endblock %}
+{% endblock %}
+{% block content %}
+	<body>
+		<p><a href="/changestuff">Admin</a></p>
+		<div class="container">
+			<form method="POST" action="/findoutfit">
+				<div class="row">
+						<div class="span4">
+							<h2>WHERE ARE U</h2>
+							<p><input type="text" name="location" placeholder="LOCATION"/> </p>
+						</div>	
+						<div class="span4">
+							<h2>HOW U FEELIN</h2>
+							<p>
+								<select id="activity_dropdown" onchange="dropdown_safety(this.form,this.id)" name="tag_id">
+										<option value="default">LOOK</option>
+										{% for tag in all_tags %}
+										<option value="{{tag.id}}">{{tag.style}}</option>
+										{% endfor %}
+								</select>
+							</p>
+						</div>
+						<div class="span4">
+							<h2>WHATCHA DOIN</h2>
+							<p>
+								<select id="activity_dropdown" onchange="dropdown_safety(this.form,this.id)" name="activity">
+										<option value="default">ACTIVITY</option>
+										<option value="school">school</option>
+										<option value="work">work</option>
+										<option value="date">a date</option>
+										<option value="bar">the bar</option>
+										<option value="club">the club</option>
+										<option value="errands">errands</option>
+										<option value="out">chillin at home</option>
+								</select>
+							</p>
+						</div>
+				</div>	
+				<input type="submit" value="CLICK ME" class="btn btn-primary btn-large" style="margin-left: 330px; margin-top: 50px; font-size: 42px; padding-bottom: 42px; padding-top: 42px; padding-left: 50px;padding-right: 50px;"/>
+				<!-- class="btn btn-primary btn-large" style="margin-left: 350px; margin-top: 50px; font-size: 42px; padding-bottom: 42px; padding-top: 42px; padding-left: 50px;padding-right: 50px;"  -->
+			</form>
+		</div>	
+	</body>
+	
+{% endblock %}

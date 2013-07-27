@@ -2,14 +2,12 @@ from flask import Flask, render_template, redirect, request, escape, session, ur
 import model
 
 app = Flask(__name__)
-
-# Keep it secret--Keep it safe.
 app.secret_key = 'Vrjwlr4315j/3yX R~fd931!jmN]fjkdl7381/,fff'
-
 
 @app.route("/")
 def index():
-    return redirect(url_for('changestuff'))
+	all_tags = model.select_tags()
+	return render_template("home.html",all_tags=all_tags)
 
 ## my input pages ##
 @app.route("/changestuff", methods=['GET'])
@@ -39,13 +37,15 @@ def process_deletegarment():
 	model.deletegarment(garment_id)
 	return redirect(url_for('changestuff'))
 
+## homepage stuff ##
 
-# @app.route("/deletegarment", methods=['POST'])
-# def process_deletegarment():
-# 	print request.form["garment.id"]
-# 	id = request.form["garment.id"]
-# 	model.deletegarment(id)
-# 	return redirect(url_for('changestuff'))
+@app.route("/findoutfit", methods=['POST'])
+def findoutfit():
+	location=request.form["location"] #activate these later. right now just a string
+	tag_id=request.form["tag_id"] #only tag_id
+	activity=request.form["activity"] #activate these later. right now just a string 
+	outfits=model.findoutfit(location=location, tag_id=tag_id, activity=activity) #return are all garment objects.
+	return render_template("outfits.html",outfits=outfits)
 
 
 if __name__ == "__main__":

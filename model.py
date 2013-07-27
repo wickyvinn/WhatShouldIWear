@@ -3,8 +3,10 @@ from sqlalchemy.orm import sessionmaker, scoped_session, relationship, backref
 from sqlalchemy import Column, Integer, String, DateTime, create_engine,\
 						ForeignKey, Table
 import psycopg2
+from random import choice
 
-ENGINE = create_engine("postgresql+psycopg2:///rack_ass")
+
+ENGINE = create_engine("postgresql+psycopg2:///rack")
 Session = scoped_session(sessionmaker(bind=ENGINE, autocommit=False, autoflush=False))
 
 session = Session()
@@ -15,8 +17,8 @@ Base.query = Session.query_property()
 class Garment_Tag(Base):
 	__tablename__ = 'garment_tags'
 	id = Column(Integer, primary_key = True)
-	garment_id = Column(Integer, ForeignKey('garments.id'), primary_key=True) #liz = do i continue using primary key? 
-	tag_id = Column(Integer, ForeignKey('tags.id'), primary_key=True) #if not, will i be able to delete by using delete. 
+	garment_id = Column(Integer, ForeignKey('garments.id'))
+	tag_id = Column(Integer, ForeignKey('tags.id'))
 	tag = relationship("Tag", backref="parent_assocs")
 
 class Garment(Base):
@@ -27,10 +29,6 @@ class Garment(Base):
 	color = Column(String(20), nullable=True)
 
 	tag = relationship("Garment_Tag", backref="parent",cascade="all, delete, delete-orphan")
-		# secondary=garment_tags,
-		# backref="garments", #do i need this stuff to cascade delete? 
-		# single_parent = True, #what about bidirectional version?
-		# cascade="all, delete, delete-orphan")
 
 class Tag(Base):
 	__tablename__ = "tags"
@@ -49,8 +47,7 @@ def addgarment(garment_tags, keywords, type, color): #grabs styles form the chec
 		garment.tag.append(garment_tag)
 	session.commit()
 
-
-#if you want to delete the relationship garment.tag.remove(specified_tag)
+				#if you want to delete the relationship garment.tag.remove(specified_tag)
 
 def addtag(tag):
 	tag = Tag(style=tag)
@@ -59,8 +56,38 @@ def addtag(tag):
 
 def deletegarment(garment_id):
 	garment = session.query(Garment).get(garment_id)
-	session.delete(garment) #the problem is that now from cascading, it deletes the entire tag. 
+	session.delete(garment)
 	session.commit()
+
+# outfit generation. homepage #
+
+def findoutfit(location, tag_id, activity): #tag is the entire tag object from tags table
+	print tag_id
+	g_tags=session.query(Garment_Tag).filter(Garment_Tag.tag_id==tag_id).all() #Find all garments tagged with this tag. 
+	outfits={}
+	viable_tops=[]
+	viable_bottoms=[]
+	viable_shoes=[]
+	viable_outerwear=[]
+	for g_tag in g_tags:
+		garment_id=g_tag.garment_id
+		garment=session.query(Garment).get(garment_id)
+		if garment.type=="top":
+			viable_tops.append(garment)
+		elif garment.type=="bottoms":
+			viable_bottoms.append(garment)
+		elif garment.type=="footwear":
+			viable_shoes.append(garment)
+		elif garment.type=="outerwear":
+			viable_outerwear.append(garment)
+	for i in range(1,4):
+		num = '%s' %(str(i))
+		outfits[num]={}
+		outfits[num]["top"]=choice(viable_tops)
+		outfits[num]["bottoms"]=choice(viable_bottoms)
+		outfits[num]["footwear"]=choice(viable_shoes)
+		outfits[num]["outerwear"]=choice(viable_outerwear)
+	return outfits #these are all objects from the garments table. 
 
 #selects for the sake of listing#
 def select_tags():
@@ -70,8 +97,6 @@ def select_tags():
 def select_garments():
 	all_garments = session.query(Garment).order_by(Garment.id.desc()).all()
 	return all_garments
-
-
 
 ### table makin ###
 
