@@ -4,7 +4,7 @@ from sqlalchemy import Column, Integer, String, DateTime, create_engine,\
 						ForeignKey, Table
 import psycopg2
 from random import choice
-
+from search import garment_search
 
 ENGINE = create_engine("postgresql+psycopg2:///rack")
 Session = scoped_session(sessionmaker(bind=ENGINE, autocommit=False, autoflush=False))
@@ -83,6 +83,7 @@ def findoutfit(location, tag_id, activity): #tag is the entire tag object from t
 		garment_id=g_tag.garment_id
 		garment=session.query(Garment).get(garment_id)
 		if garment.type=="top":
+			# garment.search_result = garment_search(garment.keywords)
 			viable_tops.append(garment)
 		elif garment.type=="dress":
 			viable_dresses.append(garment)	
@@ -95,11 +96,15 @@ def findoutfit(location, tag_id, activity): #tag is the entire tag object from t
 	for i in range(1,4):
 		num = '%s' %(str(i))
 		outfits[num]={} #maybe use .pop() to narrow down the choices already used. 
-		outfits[num]["top"]=choice(viable_tops).jsonify()
+		outfits[num]["top"]=choice(viable_tops).jsonify() #each outfit[num]['top'] is a dictionary containing parameters. 
+		outfits[num]["top"]["search_results"]=garment_search(outfits[num]["top"]["keywords"])
 		outfits[num]["bottoms"]=choice(viable_bottoms).jsonify()
+		outfits[num]["bottoms"]["search_results"]=garment_search(outfits[num]["bottoms"]["keywords"])
 		outfits[num]["footwear"]=choice(viable_shoes).jsonify()
+		outfits[num]["footwear"]["search_results"]=garment_search(outfits[num]["footwear"]["keywords"])
 		outfits[num]["outerwear"]=choice(viable_outerwear).jsonify()
-	return outfits #the objects are jsonified, so this will return a dictionary.  
+		outfits[num]["outerwear"]["search_results"]=garment_search(outfits[num]["outerwear"]["keywords"])
+	return outfits #the objects are jsonified, so this will return a simple notated dictionary.  
 
 #selects for the sake of listing#
 def select_tags():

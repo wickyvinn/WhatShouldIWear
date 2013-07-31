@@ -12,7 +12,31 @@ def garment_search(keywords_raw):
 	opener = urllib2.build_opener()
 	f = opener.open(req)
 	json_dict = json.load(f)
-	return json_dict
+	
+	# list_of_search_results = []
+	items_dict = json_dict.get("items") #each cse call returns a list of "items", which are each grouping of urls found. 
+
+	for i in range(len(items_dict)):
+		search_result = {} #each item will have a dictionary called search_result
+		search_result["title"] = items_dict[i].get("title")
+		search_result["displayLink"] = items_dict[i].get("displayLink")
+		
+		try: 
+			metatags = items_dict[i].get("pagemap").get("metatags") 
+
+			#metatags is where the product url and image usually reside. eventually only garments
+			#containing these data will be used to generate outfits. UNLESS we can search_result images from the site. maybe. 
+			#it's annoying because metatags is a list of dictionaries, 
+			#but let's just assume the first one is the only one we care about.
+
+			search_result["url"] = megatags[0].get("og:url")
+			search_result["image"] = megatags[0].get("og:image")			
+		except:
+			print "og url and og image not available."
+
+		search_result["link"] = items_dict[i].get("link")
+		# list_of_search_results.append(search_result)
+	return search_result
 
 
 
