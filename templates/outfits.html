@@ -1,25 +1,16 @@
 {% extends "layout.html" %}
 {% block head %}
+{{ super() }}
+<head>
+	<script>
+		window.JSData = {{ js_data | safe }};
+	</script>
+	<script type="text/javascript" src="{{ JS_FILE_DIR }}/static/js/test.js"></script>
+{% block title %}Found outfit!!{% endblock %}
+</head>
 {% endblock %}
 {% block content %}
-<p>
-	<br />top1: {{outfits["1"]["top"].keywords}}
-	<br />bottoms1: {{outfits["1"]["bottoms"].keywords}}
-	<br />outerwear1: {{outfits["1"]["outerwear"].keywords}}
-	<br />footwear1: {{outfits["1"]["footwear"].keywords}}
-</p>
-<p>
-	<br />top2: {{outfits["2"]["top"].keywords}}
-	<br />bottoms2: {{outfits["2"]["bottoms"].keywords}}
-	<br />outerwear2: {{outfits["2"]["outerwear"].keywords}}
-	<br />footwear2: {{outfits["2"]["footwear"].keywords}}
-</p>
-<p>
-	<br />top3: {{outfits["3"]["top"].keywords}}
-	<br />bottoms3: {{outfits["3"]["bottoms"].keywords}}
-	<br />outerwear3: {{outfits["3"]["outerwear"].keywords}}
-	<br />footwear3: {{outfits["3"]["footwear"].keywords}}
-</p>
 {% endblock %}
 {% block footer %}
+{{ super()}}
 {% endblock %}

@@ -1,6 +1,8 @@
 from flask import Flask, render_template, redirect, request, escape, session, url_for
 import model
+import json
 
+#https://developers.google.com/image-search/v1/devguide#
 app = Flask(__name__)
 app.secret_key = 'Vrjwlr4315j/3yX R~fd931!jmN]fjkdl7381/,fff'
 
@@ -44,8 +46,9 @@ def findoutfit():
 	location=request.form["location"] #activate these later. right now just a string
 	tag_id=request.form["tag_id"] #only tag_id
 	activity=request.form["activity"] #activate these later. right now just a string 
-	outfits=model.findoutfit(location=location, tag_id=tag_id, activity=activity) #return are all garment objects.
-	return render_template("outfits.html",outfits=outfits)
+	outfits=model.findoutfit(location=location, tag_id=tag_id, activity=activity) #return are all garment objects
+	js_data = json.dumps(outfits, indent=3)
+	return render_template("outfits.html",js_data=js_data)
 
 
 if __name__ == "__main__":

@@ -19,7 +19,7 @@ class Garment_Tag(Base):
 	id = Column(Integer, primary_key = True)
 	garment_id = Column(Integer, ForeignKey('garments.id'))
 	tag_id = Column(Integer, ForeignKey('tags.id'))
-	tag = relationship("Tag", backref="parent_assocs")
+	tag = relationship("Tag", backref="parent_assocs")	
 
 class Garment(Base):
 	__tablename__ = "garments"
@@ -29,6 +29,15 @@ class Garment(Base):
 	color = Column(String(20), nullable=True)
 
 	tag = relationship("Garment_Tag", backref="parent",cascade="all, delete, delete-orphan")
+
+	def __init__(self):
+		self.id = id
+		self.keywords = keywords
+		self.type = type
+		self.color = color
+	
+	def jsonify(self):
+		return {"id":self.id, "keywords":self.keywords, "type":self.type, "color":self.color}
 
 class Tag(Base):
 	__tablename__ = "tags"
@@ -62,10 +71,11 @@ def deletegarment(garment_id):
 # outfit generation. homepage #
 
 def findoutfit(location, tag_id, activity): #tag is the entire tag object from tags table
-	print tag_id
+							#still have to build dress algorithm
 	g_tags=session.query(Garment_Tag).filter(Garment_Tag.tag_id==tag_id).all() #Find all garments tagged with this tag. 
 	outfits={}
 	viable_tops=[]
+	viable_dresses=[]
 	viable_bottoms=[]
 	viable_shoes=[]
 	viable_outerwear=[]
@@ -74,6 +84,8 @@ def findoutfit(location, tag_id, activity): #tag is the entire tag object from t
 		garment=session.query(Garment).get(garment_id)
 		if garment.type=="top":
 			viable_tops.append(garment)
+		elif garment.type=="dress":
+			viable_dresses.append(garment)	
 		elif garment.type=="bottoms":
 			viable_bottoms.append(garment)
 		elif garment.type=="footwear":
@@ -82,12 +94,12 @@ def findoutfit(location, tag_id, activity): #tag is the entire tag object from t
 			viable_outerwear.append(garment)
 	for i in range(1,4):
 		num = '%s' %(str(i))
-		outfits[num]={}
-		outfits[num]["top"]=choice(viable_tops)
-		outfits[num]["bottoms"]=choice(viable_bottoms)
-		outfits[num]["footwear"]=choice(viable_shoes)
-		outfits[num]["outerwear"]=choice(viable_outerwear)
-	return outfits #these are all objects from the garments table. 
+		outfits[num]={} #maybe use .pop() to narrow down the choices already used. 
+		outfits[num]["top"]=choice(viable_tops).jsonify()
+		outfits[num]["bottoms"]=choice(viable_bottoms).jsonify()
+		outfits[num]["footwear"]=choice(viable_shoes).jsonify()
+		outfits[num]["outerwear"]=choice(viable_outerwear).jsonify()
+	return outfits #the objects are jsonified, so this will return a dictionary.  
 
 #selects for the sake of listing#
 def select_tags():
