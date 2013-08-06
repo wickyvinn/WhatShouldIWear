@@ -1,52 +1,90 @@
 #!/usr/bin/python
 import json
 import urllib2
+from bs4 import BeautifulSoup
+import requests
 
-def garment_search(keywords_raw):
-	key = 'key'
-	cx = 'cx'
-	keywords = keywords_raw.replace(' ','%20')
-	url = "https://www.googleapis.com/customsearch/v1?key=%s&cx=%s&q=%s" \
-			%(str(key), str(cx), str(keywords))
-	req = urllib2.Request(url)
-	opener = urllib2.build_opener()
-	f = opener.open(req)
-	json_dict = json.load(f)
-	
-	# list_of_search_results = []
-	items_dict = json_dict.get("items") #each cse call returns a list of "items", which are each grouping of urls found. 
+class Product(object):
+	def __init__(self, title, url, img, companyname, price):
+		self.title = title
+		self.url = url
+		self.img = img
+		self.companyname = companyname
+		self.price = price
 
-	for i in range(len(items_dict)):
-		search_result = {} #each item will have a dictionary called search_result
-		search_result["title"] = items_dict[i].get("title")
-		search_result["displayLink"] = items_dict[i].get("displayLink")
-		
-		try: 
-			metatags = items_dict[i].get("pagemap").get("metatags") 
+class Result(object): #each result is a list of Product objects. Each 
+	def __init__(self, keywords):
+		self.keywords = keywords
+		self.split_keywords = keywords.split()
+		self.products = [] #populates everytime you run polyvore on it. 
+		self.json = []#the result object itself has an attribute that is a json rendering of self.products
 
-			#metatags is where the product url and image usually reside. eventually only garments
-			#containing these data will be used to generate outfits. UNLESS we can search_result images from the site. maybe. 
-			#it's annoying because metatags is a list of dictionaries, 
-			#but let's just assume the first one is the only one we care about.
+	def polyvore(self): 
+		self.products = []
+		frm_keywords = self.keywords.replace(' ',"+")
+		r = requests.get("http://www.polyvore.com/cgi/shop?price.currency=USD&price.from=0&price.to=200&query=%s&_out=json" %(str(frm_keywords)), allow_redirects=False)
+		json_dict = r.json()
+		items = json_dict["result"]["items"]
+		for i in range(len(items)): 
+			count=0 #make sure that our title matches two words in our search so we don't get crap results. 
+			for keyword in self.split_keywords: 
+				if keyword.lower() in items[i]["title"].lower():
+					count += 1
+			if count>1:
+				self.product = Product(title=items[i]["title"].lower(), 
+								url = items[i]["url"],
+								thing_id = items[i]['thing_id']
+								img='http://ak2.polyvoreimg.com/cgi/img-thing/size/l/tid/%s.jpg' %(str(thing_id)),
+								companyname = items[i]["displayurl"],
+								price = items[i]["display_price"]
+								)
+				self.products.append(self.product) #if you want to call any of these: result.polyvore()[0].url, result being what you instantiate the Result on. 
+			if len(self.products) == 5: #we only really need five results. 
+				break
+		return self.products
 
-			search_result["url"] = megatags[0].get("og:url")
-			search_result["image"] = megatags[0].get("og:image")			
-		except:
-			print "og url and og image not available."
+	def jsonify(self):
+		#once you run polyvore on it, you can make it a json object if necessary.
+		json = []
+		for r in self.products:
+			result = {"title": r.title, "url": r.url, "img": r.img, "companyname": r.companyname, "price": r.price}
+			self.json.append(result)
+		return self.json
 
-		search_result["link"] = items_dict[i].get("link")
-		# list_of_search_results.append(search_result)
-	return search_result
+def nastygal(keywords_raw):
+	keywords = keywords_raw.replace(' ','+')
+	r = requests.get('http://www.nastygal.com/index.cfm?fuseaction=search.results&searchString=%s' %(str(keywords)))
+	soup = BeautifulSoup(r.content)
+	list_of_search_results = []
+	products = soup.find_all('div', class_='product') #we grab all the product tags. 
+	for i in products:
+		result = {}
+		image = i.find('div', class_='image') #look for all image tags WITHIN the product tag
+		price = i.find('div', class_='price') #look for the price tag WITHIN the product tag
+		result['title'] = image.a['title'] #found in a tag of the image tag
+		result['url'] = image.a['href'] #same 
+		result['company_name'] = "nastygal.com"
+		result['img'] = image.img["src"] #found in the img tag of the image tag
+		result['price'] = price.span.string #found in the span tag of the price tag. use "string" when you only want the stuff inside. 
+		list_of_search_results.append(result)
+	return list_of_search_results
 
-
-
-#sample #
-#https://www.googleapis.com/customsearch/v1?key=key&cx=cx&q=white%20collared%20shirt
-
-#cse set up
-#https://www.google.com/cse/setup/basic?cx=016612632526408655730:z0jhqf-1kro
-#https://code.google.com/apis/console/?pli=1#project:961779558939:access
-
-
-#json tutorial
-#http://stackoverflow.com/questions/1640715/get-json-data-via-url-and-use-in-python-simplejson
+def asos(keywords_raw):
+	keywords_minus = keywords_raw.replace(' ','-')
+	keywords_plus = keywords_raw.replace(' ','+')
+	r = requests.get('http://us.asos.com/search/%s?hrd=1&q=%s#parentID=Rf-700&pge=0&pgeSize=36&sort=-1%s' %(str(keywords_minus), str(keywords_plus), str('&state=Rf-700%3D1000')))
+	soup = BeautifulSoup(r.content)
+	list_of_search_results = []
+	itemwrapper = soup.find('div', {'id':'items-wrapper', 'class':'items'})
+	list_li =  itemwrapper.find_all('li') #all found in a bunch of li tags, fucking annoying. 
+	list_of_search_results=[]
+	for item in list_li:
+		result = {}
+		image = item.find('div', class_="categoryImageDiv")
+		price = item.find('div', class_="productprice")	
+		result['url'] = image.a['href']
+		result['title'] = image.a['title']
+		result['img'] = image.img['src']
+		result['price'] = price.find('span', class_='price').string
+		list_of_search_results.append(result)
+	return list_of_search_results

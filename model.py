@@ -4,7 +4,7 @@ from sqlalchemy import Column, Integer, String, DateTime, create_engine,\
 						ForeignKey, Table
 import psycopg2
 from random import choice
-from search import garment_search
+import search
 
 ENGINE = create_engine("postgresql+psycopg2:///rack")
 Session = scoped_session(sessionmaker(bind=ENGINE, autocommit=False, autoflush=False))
@@ -69,11 +69,10 @@ def deletegarment(garment_id):
 	session.commit()
 
 # outfit generation. homepage #
-
-def findoutfit(location, tag_id, activity): #tag is the entire tag object from tags table
-							#still have to build dress algorithm
+def findoutfits(tag_id, location = None, activity = None):
+	print "finding outfits"
 	g_tags=session.query(Garment_Tag).filter(Garment_Tag.tag_id==tag_id).all() #Find all garments tagged with this tag. 
-	outfits={}
+	outfits={} #go through tags and find outfit concepts. markov shit will probably go here too. 
 	viable_tops=[]
 	viable_dresses=[]
 	viable_bottoms=[]
@@ -82,29 +81,85 @@ def findoutfit(location, tag_id, activity): #tag is the entire tag object from t
 	for g_tag in g_tags:
 		garment_id=g_tag.garment_id
 		garment=session.query(Garment).get(garment_id)
-		if garment.type=="top":
-			# garment.search_result = garment_search(garment.keywords)
-			viable_tops.append(garment)
-		elif garment.type=="dress":
-			viable_dresses.append(garment)	
-		elif garment.type=="bottoms":
-			viable_bottoms.append(garment)
-		elif garment.type=="footwear":
-			viable_shoes.append(garment)
-		elif garment.type=="outerwear":
-			viable_outerwear.append(garment)
-	for i in range(1,4):
-		num = '%s' %(str(i))
-		outfits[num]={} #maybe use .pop() to narrow down the choices already used. 
-		outfits[num]["top"]=choice(viable_tops).jsonify() #each outfit[num]['top'] is a dictionary containing parameters. 
-		outfits[num]["top"]["search_results"]=garment_search(outfits[num]["top"]["keywords"])
-		outfits[num]["bottoms"]=choice(viable_bottoms).jsonify()
-		outfits[num]["bottoms"]["search_results"]=garment_search(outfits[num]["bottoms"]["keywords"])
-		outfits[num]["footwear"]=choice(viable_shoes).jsonify()
-		outfits[num]["footwear"]["search_results"]=garment_search(outfits[num]["footwear"]["keywords"])
-		outfits[num]["outerwear"]=choice(viable_outerwear).jsonify()
-		outfits[num]["outerwear"]["search_results"]=garment_search(outfits[num]["outerwear"]["keywords"])
-	return outfits #the objects are jsonified, so this will return a simple notated dictionary.  
+		if garment.type=="top": viable_tops.append(garment)
+		elif garment.type=="dress": viable_dresses.append(garment)	
+		elif garment.type=="bottoms": viable_bottoms.append(garment)
+		elif garment.type=="footwear": viable_shoes.append(garment)
+		elif garment.type=="outerwear": viable_outerwear.append(garment)
+	#now you've made the closet available given the params. so you can now choose from it. 
+	outfits = []
+	for i in range(3):
+		outfit = []
+		outfit.append(choice(viable_tops))
+		outfit.append(choice(viable_bottoms))
+		outfit.append(choice(viable_outerwear))
+		outfit.append(choice(viable_shoes))
+		outfits.append(outfit)
+	return outfits #a list of outfits. each outfit is a list of garment objects. 
+
+def searchproducts(outfits): #input multiple outfits, add objects of search results to it. 
+	print "searching for products"
+	for outfit in outfits:
+		for garment in outfit:
+			result = search.Result(garment.keywords)
+			# result.polyvore() #populate the self.products attr. of results. 
+			garment.search_results = result 
+			garment.search_results.products = result.polyvore()
+			garment.search_results.json = result.jsonify() #i'm just doing it this way instead of invoking the object for now. 
+	return outfits #if you want to call attributes here: findproduct(outfits)[0][0].result[0].url
+	#if you want to call the json outfits[0][0].search_results.json
+
+def jsonify_outfits(outfits):
+	print "jsonifying the outfits"
+	outfits_json = []
+	for outfit in outfits:
+		outfit_json = []
+		for garment in outfit:
+			garment_json = {"id":garment.id, "keywords":garment.keywords, "type":garment.type, "color":garment.color,
+			'search_results':garment.search_results.json}
+			outfit_json.append(garment_json)
+		outfits_json.append(outfit_json)	
+	return outfits_json
+
+
+
+
+
+# def findoutfit(location, tag_id, activity): #tag is the entire tag object from tags table
+# 							#still have to build dress algorithm
+# 	g_tags=session.query(Garment_Tag).filter(Garment_Tag.tag_id==tag_id).all() #Find all garments tagged with this tag. 
+# 	outfits={}
+# 	viable_tops=[]
+# 	viable_dresses=[]
+# 	viable_bottoms=[]
+# 	viable_shoes=[]
+# 	viable_outerwear=[]
+# 	for g_tag in g_tags:
+# 		garment_id=g_tag.garment_id
+# 		garment=session.query(Garment).get(garment_id)
+# 		if garment.type=="top":
+# 			# garment.search_result = garment_search(garment.keywords)
+# 			viable_tops.append(garment)
+# 		elif garment.type=="dress":
+# 			viable_dresses.append(garment)	
+# 		elif garment.type=="bottoms":
+# 			viable_bottoms.append(garment)
+# 		elif garment.type=="footwear":
+# 			viable_shoes.append(garment)
+# 		elif garment.type=="outerwear":
+# 			viable_outerwear.append(garment)
+# 	for i in range(1,4):
+# 		num = '%s' %(str(i))
+# 		outfits[num]={} #maybe use .pop() to narrow down the choices already used. 
+# 		outfits[num]["top"]=choice(viable_tops).jsonify() #each outfit[num]['top'] is a dictionary containing parameters. 
+# 		outfits[num]["top"]["search_results"]=garment_search(outfits[num]["top"]["keywords"])
+# 		outfits[num]["bottoms"]=choice(viable_bottoms).jsonify()
+# 		outfits[num]["bottoms"]["search_results"]=garment_search(outfits[num]["bottoms"]["keywords"])
+# 		outfits[num]["footwear"]=choice(viable_shoes).jsonify()
+# 		outfits[num]["footwear"]["search_results"]=garment_search(outfits[num]["footwear"]["keywords"])
+# 		outfits[num]["outerwear"]=choice(viable_outerwear).jsonify()
+# 		outfits[num]["outerwear"]["search_results"]=garment_search(outfits[num]["outerwear"]["keywords"])
+# 	return outfits #the objects are jsonified, so this will return a simple notated dictionary.  
 
 #selects for the sake of listing#
 def select_tags():

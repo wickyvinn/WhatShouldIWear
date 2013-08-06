@@ -46,7 +46,9 @@ def findoutfit():
 	location=request.form["location"] #activate these later. right now just a string
 	tag_id=request.form["tag_id"] #only tag_id
 	activity=request.form["activity"] #activate these later. right now just a string 
-	outfits=model.findoutfit(location=location, tag_id=tag_id, activity=activity) #return are all garment objects
+	outfits=model.findoutfits(location=location, tag_id=tag_id, activity=activity) #return are all garment objects
+	outfits=model.searchproducts(outfits)
+	outfits=model.jsonify_outfits(outfits)
 	js_data = json.dumps(outfits, indent=3)
 	return render_template("outfits.html",js_data=js_data)
 
