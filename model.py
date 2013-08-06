@@ -4,7 +4,7 @@ from sqlalchemy import Column, Integer, String, DateTime, create_engine,\
 						ForeignKey, Table
 import psycopg2
 from random import choice
-import search
+#import search
 
 ENGINE = create_engine("postgresql+psycopg2:///rack")
 Session = scoped_session(sessionmaker(bind=ENGINE, autocommit=False, autoflush=False))
@@ -29,6 +29,7 @@ class Garment(Base):
 	color = Column(String(20), nullable=True)
 
 	tag = relationship("Garment_Tag", backref="parent",cascade="all, delete, delete-orphan")
+	search = relationship("Garment_Search", backref="parent",cascade="all, delete, delete-orphan")
 
 	def __init__(self):
 		self.id = id
@@ -38,6 +39,23 @@ class Garment(Base):
 	
 	def jsonify(self):
 		return {"id":self.id, "keywords":self.keywords, "type":self.type, "color":self.color}
+
+class Search(Base):
+	__tablename__ = 'searches'
+	id = Column(Integer, primary_key = True)
+	url = Column(String(200), nullable = True)
+	title = Column(String(100), nullable = True)
+	companyname = Column(String(32), nullable = True)
+	img = Column(String(200), nullable = True)
+	price = Column(String(20), nullable = True)
+	thing_id = Column(Integer, nullable = True)
+
+class Garment_Search(Base):
+	__tablename__ = 'garment_searches'
+	id = Column(Integer, primary_key = True)
+	garment_id = Column(Integer, ForeignKey('garments.id'))
+	search_id = Column(Integer, ForeignKey('searches.id'))
+	search = relationship("Search", backref="parent_assocs")
 
 class Tag(Base):
 	__tablename__ = "tags"
@@ -171,6 +189,12 @@ def select_garments():
 	return all_garments
 
 ### table makin ###
+
+def search_garment_tables():
+	Search.__table__
+	Garment_Search.__table__
+	Base.metadata.create_all(ENGINE)
+	print "garment_search and search table created."
 
 def make_garments_table():
 	Garment.__table__
