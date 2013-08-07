@@ -19,7 +19,7 @@
 								<select id="activity_dropdown" name="tag_id">
 										<option value="default">LOOK</option>
 										{% for tag in all_tags %}
-										<option value="{{tag.id}}">{{tag.style}}</option>
+										<option value="{{ tag.id }}">{{tag.style}}</option>
 										{% endfor %}
 								</select>
 							</p>

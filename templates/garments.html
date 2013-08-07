@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block head %}
+{{ super() }}
+<!-- <head>
+	<script>
+		window.JSData = {{ js_data | safe }};
+	</script>
+	<script type="text/javascript" src="{{ JS_FILE_DIR }}/static/js/test.js"></script>
+{% block title %}Found outfit!!{% endblock %}
+</head> -->
+{% endblock %}
+{% block content %}
+{% for outfit in outfits %}
+
+	{% for garment in outfit %}
+
+	<p>{{garment.keywords}}
+
+		{% for search in garment.search_list %}
+			<br>title: {{ search.search.title }}
+			<br>companyname: {{ search.search.companyname }}
+			<br>url: <a href={{ search.search.url }}>{{ search.search.url }}</a>
+			<br>img: {{ search.search.img }}
+			<br>price: {{ search.search.price }} 
+
+
+	</p>
+		{% endfor %}
+
+	{% endfor %}
+	
+{% endfor %}
+
+{% endblock %}
+{% block footer %}
+{{ super()}}
+{% endblock %}

@@ -1,10 +1,9 @@
 #!/usr/bin/python
 import json
-import urllib2
 from bs4 import BeautifulSoup
 import requests
-from model import Search, Garment, Garment_Search, ENGINE, session
 import time
+from model import Search, Garment, Garment_Search, ENGINE, session
 
 def add_polyvore(garment_object):
 	print "acquiring polyvore search results"
@@ -24,8 +23,9 @@ def add_polyvore(garment_object):
 			if keyword.lower() in items[i]['title'].lower():
 				count += 1
 
-		if count/(len(garment_object.keywords.split())) > .66: #if at least two-thirds of title_words same as keywords
-# you may want to add color in.
+		if count/(len(garment_object.keywords.split())) > .66: 
+										# at least two-thirds of title_words same as keywords
+										# you may want to add color in as a mandatory requirement. 
 			url = items[i]["url"]
 			title = items[i]['title']
 			companyname = items[i]['displayurl']
@@ -40,7 +40,7 @@ def add_polyvore(garment_object):
 				existing_search_object.url = url
 				existing_search_object.title = title
 				existing_search_object.companyname = companyname
-				existing_search_object.price = price #obviously thing id is the same, and correspondingly, so is img link. 
+				existing_search_object.price = price # obviously thing id is the same, and correspondingly, so is img. 
 				num_successful_searches += 1
 
 			else: 
@@ -48,16 +48,19 @@ def add_polyvore(garment_object):
 								title = title,
 								companyname = companyname,
 								img = img,
-								price = price, #price is an integer of cents.
+								price = price, #price is a string due to $ and pounds symbols. 
 								thing_id = thing_id)
 				session.add(search)
 				session.commit()
-				session.refresh(search) #gotta commit and refresh in order to grab newly added search_id
+				session.refresh(search) # gotta commit and refresh in order to grab newly added search_id
 				garment_search = Garment_Search(garment_id = garment_object.id, search_id = search.id)
 				session.add(garment_search)
 				num_successful_searches += 1
 
-		if num_successful_searches == 5: #we only really need five results
+		if num_successful_searches == 5: # we're going to try to pull five results every time. might be less if we dont get good ones. 
+										 # keep in mind that each garment can have more than five results 
+										 # in the database if results are new every time you run. 
+										 # later, be sure to only request so many in our templates. 
 			break #end the loop. 
 
 	session.commit() #add them and update existing records. 
