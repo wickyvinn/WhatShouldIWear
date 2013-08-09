@@ -10,26 +10,31 @@
 </head> -->
 {% endblock %}
 {% block content %}
-{% for outfit in outfits %}
 
-	{% for garment in outfit %}
+<br><CENTER><h1>OH SO YOU LIKED THAT </h2></CENTER>
+<div class="container">
 
-	<p>{{garment.keywords}}
+	<div class="row">
+		{% for product in products %}
+		
+		<div class="span4">
+			<div class='well'>
+				<a href="{{product.search.url}}">
+				<img src="{{ product.search.img }}">
+				</a>
 
-		{% for search in garment.search_list %}
-			<br>title: {{ search.search.title }}
-			<br>companyname: {{ search.search.companyname }}
-			<br>url: <a href={{ search.search.url }}>{{ search.search.url }}</a>
-			<br>img: {{ search.search.img }}
-			<br>price: {{ search.search.price }} 
+				<h5><a href="{{ product.search.url }}"> {{ product.search.title }}
+				</a></h5>
+
+				from <a href="http://www.{{ product.search.companyname}}">{{ product.search.companyname }}</a>
+				<br>{{ product.search.price }}
 
 
-	</p>
+			</div>
+		</div>
 		{% endfor %}
-
-	{% endfor %}
-	
-{% endfor %}
+	</div>
+</div>
 
 {% endblock %}
 {% block footer %}

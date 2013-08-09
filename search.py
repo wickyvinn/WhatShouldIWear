@@ -57,7 +57,7 @@ def add_polyvore(garment_object):
 				session.add(garment_search)
 				num_successful_searches += 1
 
-		if num_successful_searches == 5: # we're going to try to pull five results every time. might be less if we dont get good ones. 
+		if num_successful_searches == 25: # we're going to try to pull five results every time. might be less if we dont get good ones. 
 										 # keep in mind that each garment can have more than five results 
 										 # in the database if results are new every time you run. 
 										 # later, be sure to only request so many in our templates. 

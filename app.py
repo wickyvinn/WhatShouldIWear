@@ -8,14 +8,14 @@ app.secret_key = 'Vrjwlr4315j/3yX R~fd931!jmN]fjkdl7381/,fff'
 
 @app.route("/")
 def index():
-	all_tags = model.select_tags()
+	all_tags = model.session.query(model.Tag).all()
 	return render_template("home.html",all_tags=all_tags)
 
 ## my input pages ##
 @app.route("/changestuff", methods=['GET'])
 def changestuff():
-	all_tags = model.select_tags()
-	all_garments = model.select_garments()
+	all_tags = model.session.query(model.Tag).all()
+	all_garments = model.session.query(model.Garment).order_by(model.Garment.id.desc()).all()
 	return render_template("changestuff.html",all_tags=all_tags, all_garments=all_garments)
 
 @app.route("/addgarment", methods=['POST'])
@@ -50,10 +50,11 @@ def findoutfit():
 	# js_data = json.dumps(outfits, indent=3)
 	return render_template("outfits.html",outfits=outfits)
 
-@app.route("/garments", methods=['GET','POST'])
-def findgarments():
-	outfits=request.form["outfits"]
-	return render_template("garments.html",outfits=outfits)
+@app.route("/garments")
+def findproducts():
+	garment_id = request.args.get("id")
+	products = model.session.query(model.Garment_Search).filter(model.Garment_Search.garment_id == garment_id).all()
+	return render_template("garments.html",products=products)
 
 if __name__ == "__main__":
     app.run(debug=True)

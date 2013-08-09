@@ -9,10 +9,6 @@ from random import choice
 ENGINE = create_engine("postgresql+psycopg2:///rack")
 Session = scoped_session(sessionmaker(bind=ENGINE, autocommit=False, autoflush=False))
 session = Session()
-# db = 
-# CON = connect("postgresql:///rack")
-# cur = CON.cursor()
-
 
 Base = declarative_base()
 Base.query = Session.query_property()
@@ -129,15 +125,6 @@ def jsonify_outfits(outfits):
 			outfit_json.append(garment_json)
 		outfits_json.append(outfit_json)	
 	return outfits_json
-
-#selects for the sake of listing#
-def select_tags():
-	all_tags = session.query(Tag).all()
-	return all_tags
-
-def select_garments():
-	all_garments = session.query(Garment).order_by(Garment.id.desc()).all()
-	return all_garments
 
 ### table makin ###
 

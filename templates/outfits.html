@@ -10,10 +10,8 @@
 </head> -->
 {% endblock %}
 {% block content %}
-<!-- <div class="well">
 
- -->	
-<CENTER><h1>YOU SHOULD WEAR </h2></CENTER>
+<br><CENTER><h1>YOU SHOULD WEAR </h2></CENTER>
 <div class="container">
 
 	{% for outfit in outfits %}
@@ -25,17 +23,17 @@
 				<div class="span4">
 					<div class='well'>
 						{% if garment.search[0] %}
-							<a href='/garments'><h3>{{ garment.keywords }}</h3></a>
+							<a href='/garments?id={{ garment.id }}' name='garment_id' value='{{ garment.id }}'><h3>{{ garment.keywords }}</h3></a>
 						</form>
 							<br>
-								<a href="{{ garment.search[1].search.url }}">
-								<img src="{{ garment.search[1].search.img }}">
+								<a href="{{ garment.search[0].search.url }}">
+								<img src="{{ garment.search[0].search.img }}">
 								</a>
 							<br>
-								<h4><a href="{{ garment.search[1].search.url }}"> {{ garment.search[1].search.title }}
+								<h4><a href="{{ garment.search[0].search.url }}"> {{ garment.search[0].search.title }}
 								</a></h4>
-							from <a href="http://www.{{ garment.search[1].search.companyname}}">{{ garment.search[1].search.companyname }}</a>
-							<br>{{ garment.search[1].search.price }}
+							from <a href="http://www.{{ garment.search[0].search.companyname}}">{{ garment.search[0].search.companyname }}</a>
+							<br>{{ garment.search[0].search.price }}
 						
 						{% else %}
 							<a href='/garments'><h3>{{ garment.keywords }}</h3></a>
