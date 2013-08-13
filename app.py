@@ -20,11 +20,10 @@ def changestuff():
 
 @app.route("/addgarment", methods=['POST'])
 def process_addgarment():
-	color=request.form["color"]
 	keywords=request.form["keywords"]
 	type=request.form["type"]
 	garment_tags=request.form.getlist("garment_tags")
-	model.addgarment(garment_tags=garment_tags, keywords=keywords, type=type, color=color)
+	model.addgarment(garment_tags=garment_tags, keywords=keywords, type=type)
 	return redirect(url_for('changestuff'))
 
 @app.route("/addtag", methods=['POST'])
@@ -48,13 +47,24 @@ def findoutfit():
 	activity=request.form["activity"] #activate these later. right now just a string 
 	outfits=model.findoutfits(location=location, tag_id=tag_id, activity=activity) #return are all garment objects
 	# js_data = json.dumps(outfits, indent=3)
-	return render_template("outfits.html",outfits=outfits)
+
+	color_scheme = model.session.query(model.Color_Scheme).get(7)
+	for outfit in outfits:
+		outfit = model.colorify(outfit, color_scheme)
+	return render_template("carousel.html",outfits=outfits)
 
 @app.route("/garments")
 def findproducts():
 	garment_id = request.args.get("id")
 	products = model.session.query(model.Garment_Search).filter(model.Garment_Search.garment_id == garment_id).all()
 	return render_template("garments.html",products=products)
+
+@app.route("/scrap")
+def scrap():
+	return render_template("scrap.html")
+@app.route("/carousel")
+def carousel():
+	return render_template("carousel.html")
 
 if __name__ == "__main__":
     app.run(debug=True)

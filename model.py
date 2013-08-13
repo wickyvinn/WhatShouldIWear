@@ -1,69 +1,20 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session, relationship, backref
 from sqlalchemy import Column, Integer, String, DateTime, create_engine,\
-						ForeignKey, Table
+						ForeignKey, Table, or_
 import psycopg2
 from random import choice
-#import search
+from database import Garment, Tag, Garment_Tag, Search, Garment_Search, Color_Scheme
 
-ENGINE = create_engine("postgresql+psycopg2:///rack")
+ENGINE = create_engine("postgresql+psycopg2:///rack2")
 Session = scoped_session(sessionmaker(bind=ENGINE, autocommit=False, autoflush=False))
 session = Session()
-
 Base = declarative_base()
 Base.query = Session.query_property()
 
-class Garment_Tag(Base):
-	__tablename__ = 'garment_tags'
-	id = Column(Integer, primary_key = True)
-	garment_id = Column(Integer, ForeignKey('garments.id'))
-	tag_id = Column(Integer, ForeignKey('tags.id'))
-	tag = relationship("Tag", backref="parent_assocs")
-
-class Garment(Base):
-	__tablename__ = "garments"
-	id = Column(Integer, primary_key=True)
-	keywords = Column(String(20), nullable=False)
-	type = Column(String(20), nullable=False)
-	color = Column(String(20), nullable=True)
-
-	tag = relationship("Garment_Tag", backref="parent",cascade="all, delete, delete-orphan")
-	search = relationship("Garment_Search", backref="parent",cascade="all, delete, delete-orphan")
-
-	def __init__(self):
-		self.id = id
-		self.keywords = keywords
-		self.type = type
-		self.color = color
-	
-	def jsonify(self):
-		return {"id":self.id, "keywords":self.keywords, "type":self.type, "color":self.color}
-
-class Search(Base):
-	__tablename__ = 'searches'
-	id = Column(Integer, primary_key = True)
-	url = Column(String(300), nullable = True)
-	title = Column(String(200), nullable = True)
-	companyname = Column(String(48), nullable = True)
-	img = Column(String(300), nullable = True)
-	price = Column(String(20), nullable = True)
-	thing_id = Column(Integer, nullable = True)
-
-class Garment_Search(Base):
-	__tablename__ = 'garment_searches'
-	id = Column(Integer, primary_key = True)
-	garment_id = Column(Integer, ForeignKey('garments.id'))
-	search_id = Column(Integer, ForeignKey('searches.id'))
-	search = relationship("Search", backref="parent_assocs")
-
-class Tag(Base):
-	__tablename__ = "tags"
-	id = Column(Integer, primary_key=True)
-	style = Column(String(32), nullable=False)
-
 #web input definitions#
-def addgarment(garment_tags, keywords, type, color): #grabs styles form the checkbox form
-	garment = Garment(keywords=keywords, type=type, color=color)
+def addgarment(garment_tags, keywords, type): #grabs styles form the checkbox form
+	garment = Garment(keywords=keywords, type=type)
 	session.add(garment)
 	session.commit()
 	for tag_id in garment_tags: #adds each style to the join table
@@ -72,7 +23,6 @@ def addgarment(garment_tags, keywords, type, color): #grabs styles form the chec
 		garment_tag.tag = new_tag
 		garment.tag.append(garment_tag)
 	session.commit()
-
 				#if you want to delete the relationship garment.tag.remove(specified_tag)
 
 def addtag(tag):
@@ -94,7 +44,7 @@ def findoutfits(tag_id, location = None, activity = None):
 	viable_dresses=[]
 	viable_bottoms=[]
 	viable_shoes=[]
-	#viable_outerwear=[]
+	viable_outerwear=[]
 	for g_tag in g_tags:
 		garment_id=g_tag.garment_id
 		garment=session.query(Garment).get(garment_id)
@@ -102,17 +52,31 @@ def findoutfits(tag_id, location = None, activity = None):
 		elif garment.type=="dress": viable_dresses.append(garment)	
 		elif garment.type=="bottoms": viable_bottoms.append(garment)
 		elif garment.type=="footwear": viable_shoes.append(garment)
-		# elif garment.type=="outerwear": viable_outerwear.append(garment)
+		elif garment.type=="outerwear": viable_outerwear.append(garment)
 	#now you've made the closet available given the params. so you can now choose from it. 
 	outfits = []
-	for i in range(3):
+	for i in range(4):
 		outfit = []
+		# try:
+		# 	outfit.append(choice(viable_dresses))
+		# except:
 		outfit.append(choice(viable_tops))
 		outfit.append(choice(viable_bottoms))
-		# outfit.append(choice(viable_outerwear))
 		outfit.append(choice(viable_shoes))
+		outfit.append(choice(viable_outerwear))
 		outfits.append(outfit)
 	return outfits #a list of outfits. each outfit is a list of garment objects. 			
+
+def colorify(outfit, color_scheme):
+	for garment in outfit:
+		color_search = session.query(Garment_Search).join(Search).filter(Search.color.in_([color_scheme.color1, 
+										color_scheme.color2, 
+										color_scheme.color3, 
+										color_scheme.color4, 
+										color_scheme.color5, 
+										color_scheme.color6])).filter(Garment_Search.garment_id == garment.id).first()
+		garment.colored_search = color_search
+	return outfit
 
 def jsonify_outfits(outfits):
 	print "jsonifying the outfits"
@@ -125,30 +89,6 @@ def jsonify_outfits(outfits):
 			outfit_json.append(garment_json)
 		outfits_json.append(outfit_json)	
 	return outfits_json
-
-### table makin ###
-
-def search_garment_tables():
-	Search.__table__
-	Garment_Search.__table__
-	Base.metadata.create_all(ENGINE)
-	print "garment_search and search table created."
-
-def make_garments_table():
-	Garment.__table__
-	Base.metadata.create_all(ENGINE)
-	print "garments table created."
-
-def make_tags_table():
-	Tag.__table__
-	Base.metadata.create_all(ENGINE)
-	print "tags table created."
-
-def make_garment_tags_table():
-	Garment_Tag.__table__
-	Base.metadata.create_all(ENGINE)
-	print "garment_tags table created."
-
 
 session.close()
 

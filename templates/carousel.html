@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+{% block head %}
+{{ super() }}
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
+</script>
+<script>
+$(function(){  // $(document).ready shorthand
+  $('#monster').hide().fadeIn('3000');
+});
+</script>
+
+{% endblock %}
+{% block content %}
+
+<br><CENTER><h1>WHY DON'T YOU TRY </h2></CENTER>
+<div class="container">
+
+<br />
+<br />
+<br />
+	<div id=monster class="tabbable tabs-left">
+		
+		<ul class="nav nav-tabs span2" data-tabs="tabs">
+			<li class="active"><a href="#tabs2-pane1" data-toggle="tab">1</a></li>
+			<li class=""><a href="#tabs2-pane2" data-toggle="tab">2</a></li>
+			<li class=""><a href="#tabs2-pane3" data-toggle="tab">3</a></li>
+			<li class=""><a href="#tabs2-pane4" data-toggle="tab">4</a></li>
+		</ul>
+
+	    <div class="tab-content span9">
+			<div id="tabs2-pane1" class="tab-pane fade in active">
+
+		        	<div class="span3"><a href="{{ outfits[0][0].colored_search.search.url }}">
+		        		<img src="{{ outfits[0][0].colored_search.search.img }}"></a></div>
+		        	<div class="span2"><a href="{{ outfits[0][1].colored_search.search.url }}">
+		        		<img src="{{ outfits[0][1].colored_search.search.img }}"></a></div>
+		        	<div class="span3"><a href="{{ outfits[0][3].colored_search.search.url }}">
+		        		<img src="{{ outfits[0][3].colored_search.search.img }}"></a></div>
+		        	<div class="span3"></div>
+		        	<div class="span2"><a href="{{ outfits[0][2].colored_search.search.url }}">
+		        		<img src="{{ outfits[0][2].colored_search.search.img }}"></a></div>					
+			</div>
+			
+			{% for i in range(1,4) %}
+				<div id="tabs2-pane{{i+1}}" class="tab-pane fade">
+						
+					{% if outfits[i][0].colored_search %}	 
+
+		        	<div class="span3"><a href="{{ outfits[i][0].colored_search.search.url }}">
+		        		<img src="{{ outfits[i][0].colored_search.search.img }}"></a></div>
+		        	<div class="span2"><a href="{{ outfits[i][1].colored_search.search.url }}">
+		        		<img src="{{ outfits[i][1].colored_search.search.img }}"></a></div>
+		        	<div class="span3"><a href="{{ outfits[i][3].colored_search.search.url }}">
+		        		<img src="{{ outfits[i][3].colored_search.search.img }}"></a></div>
+		        	<div class="span3"></div>
+		        	<div class="span2"><a href="{{ outfits[i][2].colored_search.search.url }}">
+		        		<img src="{{ outfits[i][2].colored_search.search.img }}"></a></div>	
+		        	{% else %}
+		        	nopes
+					{% endif %}
+
+				</div>
+			{% endfor %}
+    	</div>
+
+  </div>
+
+</div>
+
+{% endblock %}
+{% block footer %}
+{{ super()}}
+{% endblock %}
