@@ -1,71 +1,132 @@
 {% extends "layout.html" %}
 {% block head %}
 {{ super() }}
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
-</script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script>
-$(function(){  // $(document).ready shorthand
-  $('#monster').hide().fadeIn('3000');
-});
+$(function(){
+  $('#tabbss').hide().fadeIn('3000');
+			});
+$(function(){
+	$("#flip").click(function()
+		{$("#panel").toggle("slow")});
+			});
 </script>
+
+<style type="text/css"> 
+#panel
+{
+display:none;
+}
+</style>
 
 {% endblock %}
 {% block content %}
 
-<br><CENTER><h1>WHY DON'T YOU TRY </h2></CENTER>
-<div class="container">
+<br><CENTER><h1>WHY DON'T YOU TRY </h1></CENTER>
+<!-- <div class="container"> -->
 
 <br />
-<br />
-<br />
-	<div id=monster class="tabbable tabs-left">
+<!-------------------------------------------BEGINNING OF THE TABS ------------------------------- -->
+	<div id=tabbss class="tabbable tabs-left">
 		
 		<ul class="nav nav-tabs span2" data-tabs="tabs">
-			<li class="active"><a href="#tabs2-pane1" data-toggle="tab">1</a></li>
-			<li class=""><a href="#tabs2-pane2" data-toggle="tab">2</a></li>
-			<li class=""><a href="#tabs2-pane3" data-toggle="tab">3</a></li>
-			<li class=""><a href="#tabs2-pane4" data-toggle="tab">4</a></li>
+			<li class="active"><a href="#tabs2-pane1" data-toggle="tab">1. THIS!</a></li>
+			<li class=""><a href="#tabs2-pane2" data-toggle="tab">2. OR THIS!</a></li>
+			<li class=""><a href="#tabs2-pane3" data-toggle="tab">3. OR THIS!</a></li>
+			<li class=""><a href="#tabs2-pane4" data-toggle="tab">4. OR THIS!</a></li>
 		</ul>
 
 	    <div class="tab-content span9">
 			<div id="tabs2-pane1" class="tab-pane fade in active">
+					{% if outfits[0][0].colored_search and outfits[0][1].colored_search and outfits[0][2].colored_search and outfits[0][3].colored_search%}	
 
-		        	<div class="span3"><a href="{{ outfits[0][0].colored_search.search.url }}">
-		        		<img src="{{ outfits[0][0].colored_search.search.img }}"></a></div>
-		        	<div class="span2"><a href="{{ outfits[0][1].colored_search.search.url }}">
-		        		<img src="{{ outfits[0][1].colored_search.search.img }}"></a></div>
-		        	<div class="span3"><a href="{{ outfits[0][3].colored_search.search.url }}">
-		        		<img src="{{ outfits[0][3].colored_search.search.img }}"></a></div>
-		        	<div class="span3"></div>
-		        	<div class="span2"><a href="{{ outfits[0][2].colored_search.search.url }}">
-		        		<img src="{{ outfits[0][2].colored_search.search.img }}"></a></div>					
+					<div class="span3">
+						<div class="row-fluid">
+							<div id="flip" class="span12" value="{{ outfits[0][0] }}"><!-- <a href="{{ outfits[0][0].colored_search.search.url }}"> -->
+							<img id="flip2" src="{{ outfits[0][0].colored_search.search.img }}" value="{{ outfits[0][0] }}"></a></div>
+						</div>
+		        	</div>
+
+		        	<div class="span2">
+		        		<div class="row-fluid">
+		        			<div class="span12"><a href="{{ outfits[0][1].colored_search.search.url }}">
+		        				<img src="{{ outfits[0][1].colored_search.search.img }}"></a>
+		        			</div>
+		        			<div class="row-fluid">
+			        				<div class="span12"><a href="{{ outfits[0][2].colored_search.search.url }}">
+			        					<img src="{{ outfits[0][2].colored_search.search.img }}"></a>
+			        				</div>
+		        			</div>
+		        		</div>
+		        	</div>
+
+		        	<div class="span3">
+		        		<div class="row-fluid">
+		        			<div class="span12"><a href="{{ outfits[0][3].colored_search.search.url }}">
+		        				<img src="{{ outfits[0][3].colored_search.search.img }}"></a>
+		        			</div>
+		        		</div>
+		        	</div>
+
+					{% endif %}
+
 			</div>
 			
 			{% for i in range(1,4) %}
 				<div id="tabs2-pane{{i+1}}" class="tab-pane fade">
 						
-					{% if outfits[i][0].colored_search %}	 
+					{% if outfits[i][0].colored_search and 
+					outfits[i][1].colored_search and 
+					outfits[i][2].colored_search and
+					outfits[i][3].colored_search%}	 
 
-		        	<div class="span3"><a href="{{ outfits[i][0].colored_search.search.url }}">
-		        		<img src="{{ outfits[i][0].colored_search.search.img }}"></a></div>
-		        	<div class="span2"><a href="{{ outfits[i][1].colored_search.search.url }}">
-		        		<img src="{{ outfits[i][1].colored_search.search.img }}"></a></div>
-		        	<div class="span3"><a href="{{ outfits[i][3].colored_search.search.url }}">
-		        		<img src="{{ outfits[i][3].colored_search.search.img }}"></a></div>
-		        	<div class="span3"></div>
-		        	<div class="span2"><a href="{{ outfits[i][2].colored_search.search.url }}">
-		        		<img src="{{ outfits[i][2].colored_search.search.img }}"></a></div>	
-		        	{% else %}
-		        	nopes
+					<div class="span3">
+						<div class="row-fluid">
+			        		<div class="span12"><a href="{{ outfits[i][0].colored_search.search.url }}">
+			        			<img src="{{ outfits[i][0].colored_search.search.img }}"></a></div>
+		        		</div>
+		        	</div>
+		        	<div class="span2">
+		        		<div class="row-fluid">
+		        			<div class="span12"><a href="{{ outfits[i][1].colored_search.search.url }}">
+		        				<img src="{{ outfits[i][1].colored_search.search.img }}"></a></div>
+		        				<div class="row-fluid">
+		        					<div class="span12"><a href="{{ outfits[i][2].colored_search.search.url }}">
+		        					<img src="{{ outfits[i][2].colored_search.search.img }}"></a></div>
+		        				</div>
+		        		</div>
+		        	</div>
+
+		        	<div class="span3">
+		        		<div class="row-fluid">
+		        			<div class="span12"><a href="{{ outfits[i][3].colored_search.search.url }}">
+		        				<img src="{{ outfits[i][3].colored_search.search.img }}"></a></div>
+		        		</div>
+		        	</div>
 					{% endif %}
 
 				</div>
-			{% endfor %}
+			{% endfor %} 
+			
     	</div>
 
   </div>
-
+<!-------------------------------------------END OF THE TABS ------------------------------- -->
+<!-------------------------------------------BEGIN THE PANEL ------------------------------- -->
+<br />
+<br />
+<div class="container">
+<div id="panel">
+	<blockquote>YOU MIGHT ALSO LIKE THESE <i class="icon-heart"></i> </blockquote>
+		<p><div class="row-fluid">
+			{% for product in outfits[0][0].search %}
+				<div class="span2"><a href="{{ product.search.url }}"><img src="{{ product.search.img }}" class="img-rounded"></a></div>
+			{% endfor %}
+		</div></p>
 </div>
+</div>
+<!-------------------------------------------END THE PANEL ------------------------------- -->
+<!-- </div> -->
 
 {% endblock %}
 {% block footer %}

@@ -62,9 +62,6 @@ def findproducts():
 @app.route("/scrap")
 def scrap():
 	return render_template("scrap.html")
-@app.route("/carousel")
-def carousel():
-	return render_template("carousel.html")
 
 if __name__ == "__main__":
     app.run(debug=True)

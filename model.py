@@ -82,13 +82,31 @@ def jsonify_outfits(outfits):
 	print "jsonifying the outfits"
 	outfits_json = []
 	for outfit in outfits:
+
 		outfit_json = []
 		for garment in outfit:
-			garment_json = {"id":garment.id, "keywords":garment.keywords, "type":garment.type, "color":garment.color,
-			'search_results':garment.search_results.json}
+			garment_json = {"id":garment.id, "keywords":garment.keywords, "type":garment.type}
 			outfit_json.append(garment_json)
+
+			garment_json["search"]=[]
+			for search in garment.search:
+				search_json = jsonify_search(search.search)
+				garment_json["search"].append(search_json)
+
 		outfits_json.append(outfit_json)	
 	return outfits_json
+
+def jsonify_search(search):
+	return {"id":search.id, 
+			"url":search.url,
+			"title":search.title,
+			"companyname":search.companyname,
+			"img":search.img,
+			"price":search.price,
+			"thing_id":search.thing_id,
+			"description":search.description,
+			"color":search.color,
+			"primary":search.primary}
 
 session.close()
 
