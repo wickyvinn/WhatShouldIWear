@@ -64,7 +64,12 @@ def findoutfits(tag_id, location = None, activity = None):
 		outfit.append(choice(viable_bottoms))
 		outfit.append(choice(viable_shoes))
 		outfit.append(choice(viable_outerwear))
+		# color_scheme = session.query(Color_Scheme).get(38)
+		# outfit_colorified = colorify(outfit, color_scheme)
 		outfits.append(outfit)
+
+
+	# outfits_json = jsonify_outfits(outfits)
 	return outfits #a list of outfits. each outfit is a list of garment objects. 			
 
 def colorify(outfit, color_scheme):
@@ -86,27 +91,24 @@ def jsonify_outfits(outfits):
 		outfit_json = []
 		for garment in outfit:
 			garment_json = {"id":garment.id, "keywords":garment.keywords, "type":garment.type}
-			outfit_json.append(garment_json)
-
 			garment_json["search"]=[]
-			for search in garment.search:
-				search_json = jsonify_search(search.search)
-				garment_json["search"].append(search_json)
+			for i in range(5):
+				try:
+					search_json = jsonify_search(garment.search[i].search)
+					garment_json["search"].append(search_json)
+				except: 
+					pass
+			if garment_json["search"]==[]:
+				garment_json["search"]=None
+				# try: garment_json["colored_search"]=jsonify_search(garment.colored_search.search)
+				# except: garment_json["colored_search"]=None
 
+			outfit_json.append(garment_json)
 		outfits_json.append(outfit_json)	
 	return outfits_json
 
 def jsonify_search(search):
-	return {"id":search.id, 
-			"url":search.url,
-			"title":search.title,
-			"companyname":search.companyname,
-			"img":search.img,
-			"price":search.price,
-			"thing_id":search.thing_id,
-			"description":search.description,
-			"color":search.color,
-			"primary":search.primary}
+	return {"id":search.id, "url":search.url,"title":search.title,"companyname":search.companyname,"img":search.img,"price":search.price,"thing_id":search.thing_id,"color":search.color, "primary":search.primary}
 
 session.close()
 

@@ -1,6 +1,11 @@
 {% extends "layout.html" %}
 {% block head %}
 {{ super() }}
+<script>
+	window.JSData = {{ js_data | safe }};
+</script>
+<script type="text/javascript" src="{{ JS_FILE_DIR }}/static/js/test.js"></script>
+
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script>
 $(function(){
@@ -38,39 +43,11 @@ display:none;
 
 	    <div class="tab-content span9">
 			<div id="tabs2-pane1" class="tab-pane fade in active">
-					{% if outfits[0][0].colored_search and outfits[0][1].colored_search and outfits[0][2].colored_search and outfits[0][3].colored_search%}	
-
-					<div class="span3">
-						<div class="row-fluid">
-							<div id="flip" class="span12" value="{{ outfits[0][0] }}"><!-- <a href="{{ outfits[0][0].colored_search.search.url }}"> -->
-							<img id="flip2" src="{{ outfits[0][0].colored_search.search.img }}" value="{{ outfits[0][0] }}"></a></div>
-						</div>
-		        	</div>
-
-		        	<div class="span2">
-		        		<div class="row-fluid">
-		        			<div class="span12"><a href="{{ outfits[0][1].colored_search.search.url }}">
-		        				<img src="{{ outfits[0][1].colored_search.search.img }}"></a>
-		        			</div>
-		        			<div class="row-fluid">
-			        				<div class="span12"><a href="{{ outfits[0][2].colored_search.search.url }}">
-			        					<img src="{{ outfits[0][2].colored_search.search.img }}"></a>
-			        				</div>
-		        			</div>
-		        		</div>
-		        	</div>
-
-		        	<div class="span3">
-		        		<div class="row-fluid">
-		        			<div class="span12"><a href="{{ outfits[0][3].colored_search.search.url }}">
-		        				<img src="{{ outfits[0][3].colored_search.search.img }}"></a>
-		        			</div>
-		        		</div>
-		        	</div>
-
-					{% endif %}
-
+				<div id="top1"></div>
+				<div id="bottoms1"></div>
+				<div id="outerwear1"></div>
 			</div>
+		    
 			
 			{% for i in range(1,4) %}
 				<div id="tabs2-pane{{i+1}}" class="tab-pane fade">
@@ -127,7 +104,80 @@ display:none;
 </div>
 <!-------------------------------------------END THE PANEL ------------------------------- -->
 <!-- </div> -->
+<script>
+var nameStringerThingy = function(listOfNames) {
 
+	var stringOfNames = ''
+	for(var i=0; i < listOfNames.length; i++) {
+		stringOfNames+=listOfNames[i];
+	}
+	return stringOfNames;
+
+}
+
+
+var top1 = function(img_url) {
+	var span2 = $('<div class="span2">')
+	var span3 = $('<div class="span3">')
+	var span12 = $('<div class="span12">')
+	var rowfluid = $('<div class="row-fluid">')
+	var img = $('<img>')
+
+	img.attr('src',img_url);
+	span3.append(rowfluid);
+	rowfluid.append(span12);
+	span12.append(img);
+	return span3;
+}
+
+var bottoms1 = function(bottoms_url, footwear_url) {
+	var span2 = $('<div class="span2">')
+	var span12 = $('<div class="span12">')
+	var rowfluid = $('<div class="row-fluid">')
+	var first_img = $('<img>')
+
+	span2.append(rowfluid);
+	rowfluid.append(span12);
+	span12.append(first_img);
+	first_img.attr('src',bottoms_url);
+	var inner_row_fluid = $('<div class="row-fluid">')
+	span12.append(inner_row_fluid);
+	var inner_span12 = $('<div class="span12">')
+	inner_row_fluid.append(inner_span12);
+	var second_img = $('<img>')
+	inner_row_fluid.append(second_img)
+	second_img.attr('src',footwear_url)
+
+	return span2;
+}
+
+
+
+
+var js_data={{js_data | safe}};
+top1_html = top1((js_data[0][0].search[0].img))
+$('#top1').append(top1_html)
+
+bottoms_footwear_html = bottoms1(js_data[0][1].search[0].img, js_data[0][2].search[0].img)
+$('#bottoms1').append(bottoms_footwear_html)
+
+outerwear1_html = top1((js_data[0][3].search[0].img))
+$('#outerwear1').append(outerwear1_html)
+
+// for(var i = 0;i < 4;i++) {
+// 	top1_html = top1((js_data[i][0].search[0].img))
+// 	$('#top1').append(top1_html)
+
+// 	bottoms_footwear_html = bottoms1(js_data[i][1].search[0].img, js_data[i][2].search[0].img)
+// 	$('#bottoms1').append(bottoms_footwear_html)
+
+// 	outerwear1_html = top1((js_data[i][3].search[0].img))
+// 	$('#outerwear1').append(outerwear1_html)
+// }
+
+
+
+</script>
 {% endblock %}
 {% block footer %}
 {{ super()}}

@@ -46,12 +46,9 @@ def findoutfit():
 	tag_id=request.form["tag_id"] #only tag_id
 	activity=request.form["activity"] #activate these later. right now just a string 
 	outfits=model.findoutfits(location=location, tag_id=tag_id, activity=activity) #return are all garment objects
-	# js_data = json.dumps(outfits, indent=3)
-
-	color_scheme = model.session.query(model.Color_Scheme).get(7)
-	for outfit in outfits:
-		outfit = model.colorify(outfit, color_scheme)
-	return render_template("carousel.html",outfits=outfits)
+	json_outfits=model.jsonify_outfits(outfits)
+	js_data = json.dumps(json_outfits, indent=3)
+	return render_template("carousel.html",js_data=js_data,outfits=outfits)
 
 @app.route("/garments")
 def findproducts():
