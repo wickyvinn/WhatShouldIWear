@@ -140,16 +140,3 @@ session.close()
 # 	facewear = Column(String(30), nullable=True)
 # 	earrings = Column(String(64), nullable=True)
 # 	neckwear = Column(String(64), nullable=True)
-
-
-#Notes: maybe I can have a garments table: color, type of shirt (key word search-wise, like chiffon blouse or kimono), bottoms 
-#needed or no
-#then, outfits will be derivatives of those, based on markov chains. 
-#then, depending on the tags attached to each garment, we'll just create an assload of combinations with tags attached
-#then, when they call the parameters, just pull the outfit that falls under that concept. 
-
-#Notes: it'll only ping an outfit request when someone runs the request. 
-#you have garments, with tags attached.
-#it'll ping a markov chain from a view containing clothing with those tags. 
-#then it'll save the outfit in the outfit table for voting powers. these will be options following the primary option 
-#(newly found markov chain)

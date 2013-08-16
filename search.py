@@ -103,38 +103,6 @@ if __name__ == '__main__': #so if we import from search, it doesn't run these bu
 # 		self.products = [] #populates everytime you run polyvore on it. 
 # 		self.json = []#the result object itself has an attribute that is a json rendering of self.products
 
-# 	def polyvore(self): 
-# 		self.products = []
-# 		frm_keywords = self.keywords.replace(' ',"+")
-# 		r = requests.get("http://www.polyvore.com/cgi/shop?price.currency=USD&price.from=0&price.to=200&query=%s&_out=json" %(str(frm_keywords)), allow_redirects=False)
-# 		json_dict = r.json()
-# 		items = json_dict["result"]["items"]
-# 		for i in range(len(items)): 
-# 			count=0 #make sure that our title matches two words in our search so we don't get crap results. 
-# 			for keyword in self.split_keywords: 
-# 				if keyword.lower() in items[i]["title"].lower():
-# 					count += 1
-# 			if count>1:
-# 				self.product = Product(title=items[i]["title"].lower(), 
-# 								url = items[i]["url"],
-# 								thing_id = items[i]['thing_id'],
-# 								img='http://ak2.polyvoreimg.com/cgi/img-thing/size/l/tid/%s.jpg' %(str(thing_id)),
-# 								companyname = items[i]["displayurl"],
-# 								price = items[i]["display_price"]
-# 								)
-# 				self.products.append(self.product) #if you want to call any of these: result.polyvore()[0].url, result being what you instantiate the Result on. 
-# 			if len(self.products) == 5: #we only really need five results. 
-# 				break
-# 		return self.products
-
-# 	def jsonify(self):
-# 		#once you run polyvore on it, you can make it a json object if necessary.
-# 		json = []
-# 		for r in self.products:
-# 			result = {"title": r.title, "url": r.url, "img": r.img, "companyname": r.companyname, "price": r.price}
-# 			self.json.append(result)
-# 		return self.json
-
 # def nastygal(keywords_raw):
 # 	keywords = keywords_raw.replace(' ','+')
 # 	r = requests.get('http://www.nastygal.com/index.cfm?fuseaction=search.results&searchString=%s' %(str(keywords)))

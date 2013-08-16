@@ -1,17 +1,3 @@
-'''
-
-this is how the model's gonna work
-
-1 parameter is chosen by user
-2 model choses a single top, OR bottom, OR dress, associated with that look
-3 model uses markov to create an outfit based on that first word
-4 model picks a color scheme associated with the parameter
-5 model picks color combination that matches
-6 model searches database for these garments + color (as description mandatory key word)
-7 model 
-8 
-'''
-
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session, relationship, backref
 from sqlalchemy import Column, Integer, String, DateTime, create_engine,\

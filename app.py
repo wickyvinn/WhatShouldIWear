@@ -47,8 +47,8 @@ def findoutfit():
 	activity=request.form["activity"] #activate these later. right now just a string 
 	outfits=model.findoutfits(location=location, tag_id=tag_id, activity=activity) #return are all garment objects
 	json_outfits=model.jsonify_outfits(outfits)
-	js_data = json.dumps(json_outfits, indent=3)
-	return render_template("carousel.html",js_data=js_data,outfits=outfits)
+	js_outfit_data = json.dumps(json_outfits, indent=3)
+	return render_template("carousel.html",js_outfit_data=js_outfit_data)
 
 @app.route("/garments")
 def findproducts():
@@ -56,9 +56,14 @@ def findproducts():
 	products = model.session.query(model.Garment_Search).filter(model.Garment_Search.garment_id == garment_id).all()
 	return render_template("garments.html",products=products)
 
-@app.route("/scrap")
-def scrap():
-	return render_template("scrap.html")
+@app.route('/product')
+def ajax_product():
+	garment_id = request.args.get("id")
+	products = model.session.query(model.Garment_Search).filter(model.Garment_Search.garment_id == garment_id).limit(6).all()
+	similar_results_json = []
+	for product in products:
+		similar_results_json.append(model.jsonify_search(product.search))
+	return json.dumps(similar_results_json, indent=3)
 
 if __name__ == "__main__":
     app.run(debug=True)

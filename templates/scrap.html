@@ -1,0 +1,135 @@
+{% extends "layout.html" %}
+{% block head %}
+{{ super() }}
+
+<style type="text/css"> 
+
+
+   .tint {
+      position: relative;
+      float: left;
+      margin-right: 20px;
+      margin-bottom: 20px;
+      cursor: pointer;
+      -webkit-box-shadow: rgba(0,0,0,.2) 3px 5px 5px;
+      -moz-box-shadow: rgba(0,0,0,.2) 3px 5px 5px;
+      box-shadow: rgba(0,0,0,.2) 3px 5px 5px;
+      /*background:none;*/
+      background:transparent url('http://www.clker.com/cliparts/R/h/P/e/p/U/pink-heart-hi.png') center top no-repeat;
+
+
+   }
+
+   .tint:before {
+      content: "";
+      display: block;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+
+   }
+  
+   .tint:hover:before {
+      background-image: url('http://www.clker.com/cliparts/R/h/P/e/p/U/pink-heart-hi.png');
+;
+      background: rgba(0,255,255, 0.5);
+      -moz-transition: all .3s linear;
+      -webkit-transition: all .3s linear;
+      -ms-transition: all .3s linear;
+      -o-transition: all .3s linear;
+      transition: all .3s linear;
+  }
+  
+/*  .t2:before {
+    background: rgba(0,0,255, 0.5);
+  }
+*/  
+  /*.t3:before {
+    background: rgba(255,0,0, 0.5);
+  }*/
+  
+/*  .t4:before {
+    background: rgba(0,255,0, 0.5);
+  }
+*/  
+/*  .t5:before {
+    background: rgba(255,0,240, 0.5);
+  }
+*/  
+/*  .t6:before {
+    background: rgba(255,102,0, 0.6);
+  }
+*/
+label.custom-select {
+position: relative;
+display: inline-block;
+
+  }
+
+
+@font-face {
+font-family: 'Pacifico';
+font-style: normal;
+font-weight: 400;
+src: local('Pacifico Regular'), local('Pacifico-Regular'), url(http://themes.googleusercontent.com/static/fonts/pacifico/v4/yunJt0R8tCvMyj_V4xSjaXYhjbSpvc47ee6xR_80Hnw.woff) format('woff');
+}
+
+
+.custom-select select {
+display: inline-block;
+padding: 4px 3px 3px 5px;
+margin: 0;
+font: 400 100px/1.5 'Pacifico', Helvetica, sans-serif;
+outline:none; /* remove focus ring from Webkit */
+line-height: 1.2;
+background: #000;
+color:white;
+border:0;
+ }
+
+
+
+
+/* Select arrow styling */
+.custom-select:after {
+content: "▼";  /* Current arrow I would like to change */
+position: absolute;
+top: 0;
+right: 0;
+bottom: 0;
+font-size: 60%;
+line-height: 30px;
+padding: 0 7px;
+background: #000;
+color: white;
+}
+
+.no-pointer-events .custom-select:after {
+content: none;
+}
+
+   
+</style>
+
+{% endblock %}
+{% block content %}
+
+   <body>
+<label class="custom-select">
+<select>
+<option>Sushi</option>
+<option>Blue cheese with crackers</option>
+<option>Steak</option>
+<option>Other</option>
+</select>
+</label>
+
+
+   </body>
+
+<script>
+
+   
+{% endblock %}
