@@ -102,22 +102,18 @@
 		<form method="POST" action="/findoutfit">
 			<input type="text" name="location" placeholder="where are you"/>
 
-			<select dir="mtl" id="activity_dropdown" name="tag_id">
+			<select id="activity_dropdown" name="tag_id">
 					<option value="default">how you feelin</option>
 					{% for tag in all_tags %}
 					<option value="{{ tag.id }}">{{tag.style}}</option>
 					{% endfor %}
 			</select>
 
-			<select id="activity_dropdown" name="activity">
+			<select id="activity_dropdown" name="activity_id">
 					<option value="default">whatcha doin</option>
-					<option value="school">school</option>
-					<option value="work">work</option>
-					<option value="date">a date</option>
-					<option value="bar">the bar</option>
-					<option value="club">the club</option>
-					<option value="errands">errands</option>
-					<option value="out">chillin at home</option>
+					{% for activity in all_activities %}
+					<option value="{{ activity.id }}">{{activity.activity}}</option>
+					{% endfor %}
 			</select>
 			
 			<input type="submit" value='submit'>

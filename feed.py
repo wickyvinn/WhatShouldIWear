@@ -1,11 +1,11 @@
-from database import Garment, Tag, Garment_Tag, make_garments_table, make_tags_table, make_garment_tags_table, Color_Scheme
+from database import Garment, Tag, Garment_Tag, Search, Garment_Search, Color_Scheme, Activity, Garment_Activity, make_garments_table, make_tags_table, make_garment_tags_table
 from sqlalchemy.ext.declarative import declarative_base
 import csv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 
 
-ENGINE = create_engine("postgresql+psycopg2:///rack2")
+ENGINE = create_engine("postgresql+psycopg2:///rack")
 Session = scoped_session(sessionmaker(bind=ENGINE, autocommit=False, autoflush=False))
 
 session = Session()
@@ -40,6 +40,15 @@ def load_garment_tags(session):
 			session.add(u)
 	session.commit()
 	print "loaded garment_tags"	
+
+def load_activities(session):
+	with open('seed_files/activities', 'rb') as data_file:
+		datareader = csv.reader(data_file, delimiter='|')
+		for row in datareader:
+			u = Activity(activity=row[0])
+			session.add(u)
+	session.commit()
+	print "loaded activities"	 
 
 def load_color_schemes(session):
 	with open('seed_files/color_schemes', 'rb') as data_file:

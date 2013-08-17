@@ -8,20 +8,52 @@
 					<form method="POST" action="/addgarment">
 						<input type="text" name="keywords" placeholder="keywords"/> 
 						<br><input type="text" name="type" placeholder="i.e. top,bottoms,footwear,accessories"/> 
-						<p>Styles</p>
+						<p>___Styles___</p>
 						<div style="font-size:10">	
 							{% for tag in all_tags %}
 							<input type="checkbox" name="garment_tags" value="{{tag.id}}">{{tag.style}}
 							{% endfor %}
 						</div>
+						<p>___Activities___</p>
+						<div style="font-size:10">	
+							{% for activity in all_activities %}
+							<input type="checkbox" name="garment_activities" value="{{activity.id}}">{{activity.activity}}
+							{% endfor %}
+						</div>						
 						<br><input type="submit" value="Submit" />
 					</form>
 
+				<h4> Update a garment. </h4>
+					<form method="POST" action="/updategarment">
+						<select id="garment_dropdown" onchange="dropdown_safety(this.form,this.id)" name="garment_id">
+							<option value="default">select outfit</option> 
+							{% for garment in all_garments %}
+							<option value="{{garment.id}}">{{garment.id}} {{garment.keywords}} {{garment.color}} 
+							</option> 
+							{% endfor %}
+						</select>
+
+						<p>___Styles___</p>
+						<div style="font-size:10">	
+							{% for tag in all_tags %}
+							<input type="checkbox" name="garment_tags" value="{{tag.id}}">{{tag.style}}
+							{% endfor %}
+						</div>
+						<p>___Activities___</p>
+						<div style="font-size:10">	
+							{% for activity in all_activities %}
+							<input type="checkbox" name="garment_activities" value="{{activity.id}}">{{activity.activity}}
+							{% endfor %}
+						</div>					
+						<br><input type="submit" value="Submit" />
+					</form>
+
+<!-- 
 				<h4> Add a tag. </h4>
 					<form method="POST" action="/addtag">
 						<input type="text" name="tag" placeholder="style"/> 
 						<br><input type="submit" value="Submit" />
-					</form>
+					</form> -->
 
 				<h4>Delete a garment.  </h4>
 					<form method="POST" action="/deletegarment">

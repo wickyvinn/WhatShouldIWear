@@ -4,7 +4,7 @@ from sqlalchemy import Column, Integer, String, DateTime, create_engine,\
 						ForeignKey, Table, or_
 import psycopg2
 
-ENGINE = create_engine("postgresql+psycopg2:///rack2")
+ENGINE = create_engine("postgresql+psycopg2:///rack")
 Session = scoped_session(sessionmaker(bind=ENGINE, autocommit=False, autoflush=False))
 session = Session()
 
@@ -19,6 +19,7 @@ class Garment(Base):
 
 	tag = relationship("Garment_Tag", backref = "parent", cascade="all, delete, delete-orphan")
 	search = relationship("Garment_Search", backref = "parent", cascade="all, delete, delete-orphan")
+	activity = relationship("Garment_Activity", backref = "parent", cascade="all, delete, delete-orphan")
 
 class Tag(Base):
 	__tablename__ = 'tags'
@@ -52,6 +53,19 @@ class Garment_Search(Base):
 	garment_id = Column(Integer, ForeignKey("garments.id"))
 	search_id = Column(Integer, ForeignKey("searches.id"))
 	search = relationship("Search", backref="parent_assocs")
+
+class Activity(Base):
+	__tablename__ = "activities"
+	id = Column(Integer, primary_key = True)
+	activity = Column(String(32), nullable = False)
+
+class Garment_Activity(Base):
+	__tablename__ = "garment_activities"
+	id = Column(Integer, primary_key = True)
+	garment_id = Column(Integer, ForeignKey("garments.id"))
+	activity_id = Column(Integer, ForeignKey("activities.id"))
+
+	activity = relationship("Activity", backref = "parent_assocs")
 
 class Color_Scheme(Base):
 	__tablename__ = "color_schemes"
@@ -90,6 +104,9 @@ def make_all_tables():
 	Garment_Tag.__table__
 	Search.__table__
 	Garment_Search.__table__
+	Color_Scheme.__table__
+	Activity.__table__
+	Garment_Activity.__table__
 	Base.metadata.create_all(ENGINE)
 	print "all tables created."
 
