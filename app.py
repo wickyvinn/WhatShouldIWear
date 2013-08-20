@@ -49,11 +49,17 @@ def process_deletegarment():
 	model.deletegarment(garment_id)
 	return redirect(url_for('changestuff'))
 
+@app.route("/makeprimary", methods=['POST'])
+def makeprimary():
+	search_id=request.form["search_id"]
+	model.makeprimary(search_id)
+	return redirect(url_for('changestuff'))
+
 ## homepage stuff ##
 
 @app.route("/findoutfit", methods=['POST'])
 def findoutfit():
-	location=request.form["location"] #activate these later. right now just a string
+	location=request.form["location"] # zipcode, a string. pywapi accepts a string. 
 	tag_id=request.form["tag_id"] #only tag_id
 	activity_id=request.form["activity_id"]
 	json_outfits=model.findoutfits(location=location, tag_id=tag_id, activity_id=activity_id) #return are all garment objects
@@ -67,10 +73,14 @@ def findproducts():
 	products = model.session.query(model.Garment_Search).filter(model.Garment_Search.garment_id == garment_id).all()
 	return render_template("garments.html",products=products)
 
+@app.route('/scrap')
+def scrap():
+	return render_template('scrap.html')
+
 @app.route('/product')
 def ajax_product():
 	garment_id = request.args.get("id")
-	products = model.session.query(model.Garment_Search).filter(model.Garment_Search.garment_id == garment_id).limit(6).all()
+	products = model.session.query(model.Garment_Search).filter(model.Garment_Search.garment_id == garment_id).all()
 	similar_results_json = []
 	for product in products:
 		similar_results_json.append(model.jsonify_search(product.search))

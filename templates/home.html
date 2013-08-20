@@ -2,6 +2,8 @@
 {% block head %}
 {{ super() }}
 
+
+
 <style type="text/css"> 
 
 	.all {
@@ -36,11 +38,17 @@
 		margin-right: auto;
 		margin-left:auto;
 		font: 400 20px/1.5 'Pacifico', Helvetica, sans-serif;
+
+		background-color: #FFFFFF;
+		-webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.025);
+		-moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.025);
+		box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.025);
+
 	}
 
 	select
 	{
-		-webkit-appearance: none;
+		/*-webkit-appearance: none;*/
 		display:block;
 		border:solid 1px #000000;
 		color: #0088CC;
@@ -48,7 +56,6 @@
 		width: 240px;
 		font-size:inherit;
 		text-align:center;
-		/*direction: ctl;*/
 		margin-right: auto;
 		margin-left:auto;
 		font: 400 20px/1.5 'Pacifico', 'Gill Sans', sans-serif;
@@ -64,7 +71,7 @@
 		margin-right: auto;
 		margin-left:auto;
 		font: 400 20px/1.5 'Pacifico', 'Gill Sans', sans-serif;
-		background-color: #FFFFFF
+		/*background-color: #FFFFFF*/
 	}
 
 
@@ -99,17 +106,17 @@
 
 		<h4>whatchu wanna wear</h4>
 
-		<form method="POST" action="/findoutfit">
+		<form id="outfitform" method="POST" action="/findoutfit">
 			<input type="text" name="location" placeholder="where are you"/>
 
-			<select id="activity_dropdown" name="tag_id">
+			<select name="tag_id">
 					<option value="default">how you feelin</option>
 					{% for tag in all_tags %}
 					<option value="{{ tag.id }}">{{tag.style}}</option>
 					{% endfor %}
 			</select>
 
-			<select id="activity_dropdown" name="activity_id">
+			<select name="activity_id">
 					<option value="default">whatcha doin</option>
 					{% for activity in all_activities %}
 					<option value="{{ activity.id }}">{{activity.activity}}</option>
@@ -125,4 +132,29 @@
 {% endblock %}
 {% block footer %}
 {{ super()}}
+<script>
+$(document).ready(function () {
+
+    jQuery.validator.addMethod('selectCheck', function(value) {
+    	return (value !== "default");
+    }, "This field is required.");
+
+    $('#outfitform').validate({ // initialize the plugin
+        rules: {
+            location: {
+                required: true
+            },
+            tag_id: {
+                selectCheck: true
+            },
+            activity_id: {
+                selectCheck: true
+            }
+        }
+    });
+
+
+
+});
+</script>
 {% endblock %}

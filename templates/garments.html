@@ -12,14 +12,19 @@
 {% block content %}
 
 <br><CENTER><h1>OH SO YOU LIKED THAT </h2></CENTER>
+
+						
+
 <div class="container">
 
+<form method="POST" action="/makeprimary">
 	<div class="row">
 		{% for product in products %}
 		
 		<div class="span4">
 			<div class='well'>
-				<a href="{{product.search.url}}">
+				<p><input type="checkbox" name="search_id" value="{{product.search.id}}">  MAKE PRIMARY.</p>
+				<br><a href="{{product.search.url}}">
 				<img src="{{ product.search.img }}">
 				</a>
 
@@ -30,10 +35,13 @@
 				<br>{{ product.search.price }}
 
 
+
 			</div>
 		</div>
 		{% endfor %}
 	</div>
+	<center><br><input type="submit" value="Submit" /></center>
+</form>
 </div>
 
 {% endblock %}

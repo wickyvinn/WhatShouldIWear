@@ -18,6 +18,9 @@ $(function(){
 
 	#panel {
 		display:none;
+		overflow-x: scroll;
+        overflow-y: hidden;
+
 	}
 	.tag {
 		margin-top:2px;
@@ -119,6 +122,7 @@ $(function(){
   
 	.garment:hover:after {
 		content: url("/static/img/pink-heart-hi-clickme-resized.png");
+		/*content: "";*/
 		padding: 30px;
 	}
 
@@ -215,14 +219,13 @@ var panel = function(js_product_data) {
 
 	var row = $('<div class="row-fluid">')
 	for (var i=0; i < js_product_data.length; i++) {
+		console.log(js_product_data.length)
 		var span2 = $('<div class="span2">')
 		var product_object = $('<div class="tint">')
 		var img = $('<img>')
 		var a = $('<a>')
 		var thing_id = js_product_data[i]['thing_id']
 		var thing = $('#' + thing_id);
-		
-		// var tagtime = product_object.click(function() {
 			
 		var tag = $('<div class="tag">')
 		tag.html(
@@ -234,9 +237,6 @@ var panel = function(js_product_data) {
 		tag.append(cn)
 
 		tag.append(" | "+js_product_data[i]["price"])
-
-		// $('#'+thing_id).append('pooppoop');
-		// })
 
 		product_object.attr('id', js_product_data[i]['thing_id'])
 		a.attr('class', 'product')
@@ -266,7 +266,24 @@ var top1 = function(garment) {
 	var a = $('<a class="garment">')
 	var img = $('<img>')
 
-	img.attr('src',garment["search"][0]["img"]);
+	console.log("TOP/OUTER GARMENT ID:"+garment['id']);
+
+	for (var i=0; i<garment["search"].length; i++) {
+		if (garment["search"][i]["primary"] === 1) {
+			var primary_product = garment["search"][i]
+			var primary_exists = 1
+			// console.log("we set the primary to the right one"+i);
+		}
+	}
+	if (primary_exists) {
+	}
+	else {
+		var primary_product = garment["search"][0]
+		// console.log('we set the primary to the first guy');
+	}
+
+
+	img.attr('src',primary_product["img"]);
 	a.attr('id',garment["id"])
 	
 	span3.append(rowfluid);
@@ -279,14 +296,14 @@ var top1 = function(garment) {
 	tag.append(icon)
 	tag.html(garment["keywords"]
 		+"<br />"
-		+"<a href="+garment["search"][0]["url"]+">"
+		+"<a href="+primary_product["url"]+">"
 		+'<i class="icon-tag"></i></a>'+' <em>from</em> ')
 	var cn = $("<a>")
-	cn.attr('href',garment["search"][0]["companyname"])
-	cn.html(garment["search"][0]["companyname"])
+	cn.attr('href',primary_product["companyname"])
+	cn.html(primary_product["companyname"])
 	tag.append(cn)
 
-	tag.append(" | "+garment["search"][0]["price"])
+	tag.append(" | "+primary_product["price"])
 	span12.append(tag)
 	
 	return span3;
@@ -294,13 +311,33 @@ var top1 = function(garment) {
 
 var bottoms1 = function(bottoms, footwear) {
 
+	// FIRST SECTION //
+
 	var span2 = $('<div class="span2">')
 	var span12 = $('<div class="span12">')
 	var rowfluid = $('<div class="row-fluid">')
 	var bottoms_img = $('<img>')
 	var bottoms_a = $('<a class="garment">')
 
-	bottoms_img.attr('src',bottoms["search"][0]['img']);
+	console.log("BOTTOMS GARMENT ID:"+bottoms['id']);
+
+	for (var i=0; i<bottoms["search"].length; i++) {
+		if (bottoms["search"][i]["primary"] === 1) {
+			var bottoms_primary_product = bottoms["search"][i]
+			var bottom_primary_exists = 1
+			// console.log("we set the primary to the right one"+i);
+		}
+	}
+	if (bottom_primary_exists) {
+	}
+	else {
+		var bottoms_primary_product = bottoms["search"][0]
+		// console.log('we set the primary to the first guy');
+	}
+
+	console.log("bottoms_primary_product")
+
+	bottoms_img.attr('src',bottoms_primary_product['img']);
 	bottoms_a.attr("id",bottoms['id']);
 
 	span2.append(rowfluid);
@@ -309,45 +346,65 @@ var bottoms1 = function(bottoms, footwear) {
 	var tag = $('<div class="tag">')
 	tag.html(bottoms["keywords"]
 		+"<br />"
-		+"<a href="+bottoms["search"][0]["url"]+">"
+		+"<a href="+bottoms_primary_product["url"]+">"
 		+'<i class="icon-tag"></i></a>'+' <em>from</em> ')	
 	var cn = $("<a>")
-	cn.attr('href',bottoms["search"][0]["companyname"])
-	cn.html(bottoms["search"][0]["companyname"])
+	cn.attr('href',bottoms_primary_product["companyname"])
+	cn.html(bottoms_primary_product["companyname"])
 	tag.append(cn)
-	tag.append(" | "+bottoms["search"][0]["price"])
+	tag.append(" | "+bottoms_primary_product["price"])
 	span12.append(tag)
 
 	span12.append(bottoms_a);
 	bottoms_a.append(bottoms_img);
+
+
+
+	// SECOND SECTION //
+
+	console.log("FOOTWEAR GARMENT ID:"+footwear['id']);
 
 	var inner_row_fluid = $('<div class="row-fluid">')
 	var inner_span12 = $('<div class="span12">')
 	var footwear_a = $('<a class="garment">')
 	var footwear_img = $('<img>');
 
-	footwear_img.attr('src',footwear["search"][0]['img']);
-	footwear_a.attr('id',footwear['id'])
+	for (var i=0; i<footwear["search"].length; i++) {
+		if (footwear["search"][i]["primary"] === 1) {
+			var footwear_primary_product = footwear["search"][i]
+			var footwear_primary_exists = 1
+			console.log("we set the primary to the right one"+i);
+		}
+	}
+	if (footwear_primary_exists) {
+	}
+	else {
+		var footwear_primary_product = footwear["search"][0]
+		// console.log('we set the primary to the first guy');
+	}
+
+	footwear_img.attr('src',footwear_primary_product['img']);
+	footwear_a.attr('id',footwear['id']);
 
 	span12.append(inner_row_fluid);
 	inner_row_fluid.append(inner_span12);
-	inner_span12.append(footwear_a)
+	inner_span12.append(footwear_a);
 	footwear_a.append(footwear_img);
 
 	var tag = $('<div class="tag">')
 	var icon = $('<i class="icon-search">')
-	tag.append(icon)
+	tag.append(icon);
 	tag.html(footwear["keywords"]
 		+"<br />"
-		+"<a href="+footwear["search"][0]["url"]+">"
-		+'<i class="icon-tag"></i></a>'+' <em>from</em> ')
+		+"<a href="+footwear_primary_product["url"]+">"
+		+'<i class="icon-tag"></i></a>'+' <em>from</em> ');
 	var cn = $("<a>")
-	cn.attr('href',footwear["search"][0]["companyname"])
-	cn.html(footwear["search"][0]["companyname"])
-	tag.append(cn)
+	cn.attr('href',footwear_primary_product["companyname"]);
+	cn.html(footwear_primary_product["companyname"]);
+	tag.append(cn);
 
-	tag.append(" | "+footwear["search"][0]["price"])
-	span12.append(tag)
+	tag.append(" | "+footwear_primary_product["price"]);
+	span12.append(tag);
 	
 
 	return span2;
@@ -357,15 +414,14 @@ var js_outfit_data={{js_outfit_data | safe}};
 
 for(var i = 1;i < 4;i++) {
 
-	console.log("outfit number"+i);
+	console.log("----outfit number"+i+"----");
 
 	if (js_outfit_data[i][0].search) {
 		top1_html = top1(js_outfit_data[i][0])
 		$('#top'+i).append(top1_html);
 	}
 	else {
-		top1_html = top1("http://data.whicdn.com/images/40458188/tumblr_m4m6b9qQ021r47aozo4_400_thumb.gif")
-		$('#top'+i).append(top1_html);
+		console.log(js_outfit_data[i][0]['keywords']+" no image available");
 	}
 
 	if (js_outfit_data[i][1].search && js_outfit_data[i][2].search) {
@@ -373,8 +429,8 @@ for(var i = 1;i < 4;i++) {
 		$('#bottoms'+i).append(bottoms_footwear_html);	
 	}
 	else {
-		bottoms_footwear_html = bottoms1("http://data.whicdn.com/images/40458188/tumblr_m4m6b9qQ021r47aozo4_400_thumb.gif","http://data.pusheen.com/aboutpusheen.gif")
-		$('#bottoms'+i).append(bottoms_footwear_html);
+		console.log(js_outfit_data[i][1]['keywords']+" no image available");
+		console.log(js_outfit_data[i][2]['keywords']+" no image available");
 	}
 
 	if (js_outfit_data[i][3].search) {
@@ -382,8 +438,7 @@ for(var i = 1;i < 4;i++) {
 		$('#outerwear'+i).append(outerwear1_html);
 	}
 	else {
-		outerwear1_html = top1("http://data.whicdn.com/images/40458188/tumblr_m4m6b9qQ021r47aozo4_400_thumb.gif")
-		$('#outerwear'+i).append(outerwear1_html);
+		console.log(js_outfit_data[i][3]['keywords']+" no image available");
 	}
 }
 
