@@ -181,12 +181,11 @@ $(function(){
   </div>
 <!-------------------------------------------BEGIN THE PANEL ------------------------------- -->
 <br />
-<br />
+
 <div class="container">
 	<div id="panel">
 	</div>
 </div>
-
 <form action="/">>
 	<input type="submit" value='BACK'>
 </form>
@@ -215,46 +214,108 @@ var panel = function(js_product_data) {
 	var panelheader = $('<div class="panelheader">')
 	panelheader.html('<h5>oh so you like that huh</h5>')
 
-	whole.append(panelheader)
+	console.log(js_product_data.length+"LENGTH!!!");
+	console.log("WHICH MEANS THERE SHOULD BE "+js_product_data.length/6+" ROWS!!!");
+	whole.append(panelheader);
+	
+//start the carousel	
+	var carousel = $('<div id="myCarousel" class="carousel slide">')
 
-	var row = $('<div class="row-fluid">')
-	for (var i=0; i < js_product_data.length; i++) {
-		console.log(js_product_data.length)
-		var span2 = $('<div class="span2">')
-		var product_object = $('<div class="tint">')
-		var img = $('<img>')
-		var a = $('<a>')
-		var thing_id = js_product_data[i]['thing_id']
-		var thing = $('#' + thing_id);
-			
-		var tag = $('<div class="tag">')
-		tag.html(
-		"<a href="+js_product_data[i]["url"]+">"
-		+'<i class="icon-tag"></i></a>'+' <em>from</em> ')
-		var cn = $("<a>")
-		cn.attr('href',js_product_data[i]["companyname"])
-		cn.html(js_product_data[i]["companyname"])
-		tag.append(cn)
+//write the sliders. 
 
-		tag.append(" | "+js_product_data[i]["price"])
-
-		product_object.attr('id', js_product_data[i]['thing_id'])
-		a.attr('class', 'product')
-		a.attr('href',js_product_data[i]['url'])
-		
-
-		img.attr('src',js_product_data[i]['img']);
-		img.attr('class',"img-rounded");
-		img.attr('thing_id', js_product_data[i]['img'])
-		a.append(img);
-		
-		product_object.append(a)
-		product_object.append(tag);
-		span2.append(product_object)
-		row.append(span2);
-		
+	//just the first active one. 
+	var carouselIndicators = $('<ol class="carousel-indicators"><li data-target="#myCarousel" data-slide-to="0" class="active"></li>')
+	//now for all the ones afterwards. if only one row, this won't initiate. 
+	for (var i=1; i<(js_product_data.length/6); i++) {
+		var li = $('<li data-target="#myCarousel" data-slide-to="'+i+
+			'"></li>')
+		carouselIndicators.append(li);
 	}
-	whole.append(row)
+
+	carousel.append(carouselIndicators);
+
+///now write the body.
+	var carouselInner = $('<div class="carousel-inner">')
+	
+	var count=0
+///for loop for each item collection. 
+	for (var i=0; i<js_product_data.length/6; i++) {
+		
+		console.log('row #'+i);
+		console.log('total rows:'+js_product_data.length/6)
+
+		if (i == 0) {
+			var item = $('<div class="active item">')
+				
+		}
+		else {
+			var item = $('<div class="item">')
+		}
+
+		var row = $('<div class="row-fluid">')
+
+
+
+		for (var j=count; j<count+6; j++) { //create the photo.
+			console.log("JjJ "+j);	
+
+			var span2 = $('<div class="span2">')
+			var product_object = $('<div class="tint">')
+			var img = $('<img>')
+			var a = $('<a>')
+			var thing_id = js_product_data[j]['thing_id']
+			var thing = $('#' + thing_id);
+				
+			var tag = $('<div class="tag">')
+			tag.html("<a href="+js_product_data[j]["url"]+">"+'<i class="icon-tag"></i></a>'+' <em>from</em> ');
+			var cn = $("<a>")
+			cn.attr('href',js_product_data[j]["companyname"]);
+			cn.html(js_product_data[j]["companyname"]);
+			tag.append(cn);
+
+			tag.append(" | "+js_product_data[j]["price"]);
+
+			product_object.attr('id', js_product_data[j]['thing_id']);
+			a.attr('class', 'product');
+			a.attr('href',js_product_data[j]['url']);
+			img.attr('src',js_product_data[j]['img']);
+			img.attr('class',"img-rounded");
+			img.attr('thing_id', js_product_data[j]['img'])
+			a.append(img);
+			
+			product_object.append(a);
+			product_object.append(tag);
+			span2.append(product_object);
+			row.append(span2);
+			console.log("appending span2 to row");
+
+			item.append(row); 
+			console.log("appending item to row");
+
+			////////////////
+			if (j === js_product_data.length-1) {
+				break
+			}
+			///////////////			
+
+		}
+			count+=6;
+			console.log('count: '+count);
+
+			carouselInner.append(item);	
+			console.log("appending item to carousel Inner");		
+	}		
+
+	carousel.append(carouselInner);
+
+	var nav1 = $('<a class="carousel-control left" href="#myCarousel" data-slide="prev">')
+	var nav2 = $('<a class="carousel-control right" href="#myCarousel" data-slide="next">')
+	nav1.html('<img src="/static/img/arrow-left.png">')
+	nav2.html('<img src="/static/img/arrow-right.png">')
+	carousel.append(nav1)
+	carousel.append(nav2)
+
+	whole.append(carousel);
 	$("#panel").html(whole);
 }
 
