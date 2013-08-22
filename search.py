@@ -105,7 +105,7 @@ def add_polyvore(garment_object,color):
 if __name__ == '__main__': #so if we import from search, it doesn't run these but only when we run search.py (aka when the "main" module is search.py)
 	all_garments = session.query(Garment).all()
 	colors = ['','black','blue','red','green','gray','white','yellow']
-	for garment in all_garments[-1:]:
+	for garment in all_garments[5:]:
 		for color in colors:
 			print color, garment.keywords,":"
 			add_polyvore(garment, color)
