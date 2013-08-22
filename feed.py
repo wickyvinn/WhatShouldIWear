@@ -78,13 +78,3 @@ def load_color_schemes(session):
 			session.add(u)
 	session.commit()
 	print "loaded color_schemes"
-
-
-# import psycopg2
-
-# conn = psycopg2.connect(database='rack')
-# cur = conn.cursor()
-# 	cur.execute("INSERT INTO tags (style) VALUES (%s)",(style,))
-# 	cur.execute("SELECT * FROM outfits;")
-
-# conn.commit()
