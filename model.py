@@ -15,7 +15,7 @@ Base.query = Session.query_property()
 
 conn = psycopg2.connect(database='rack')
 cur = conn.cursor()
-
+  
 
 #web input definitions#
 def addgarment(garment_tags, garment_activities, keywords, type): #grabs styles form the checkbox form
@@ -59,7 +59,7 @@ def updategarment(garment_id, garment_tags, garment_activities):
 		garment.activity.append(garment_activity)
 	session.commit()
 
-def makeprimary(search_id):
+def makeprimary(search_id): #curate primary images.
 	search_id = int(float(search_id))
 	garment_search=session.query(Garment_Search).filter(Garment_Search.search_id == search_id).one()
 	garment_search.search.primary=1 #set new primary

@@ -12,7 +12,7 @@ def index():
 	all_activities = model.session.query(model.Activity).all()
 	return render_template("home.html",all_tags=all_tags, all_activities=all_activities)
 
-## my input pages ##
+## my input pages ## 
 @app.route("/changestuff", methods=['GET'])
 def changestuff():
 	all_tags = model.session.query(model.Tag).all()
@@ -77,7 +77,7 @@ def findproducts():
 def scrap():
 	return render_template('scrap.html')
 
-@app.route('/product')
+@app.route('/product') #run panel method
 def ajax_product():
 	garment_id = request.args.get("id")
 	products = model.session.query(model.Garment_Search).filter(model.Garment_Search.garment_id == garment_id).all()
